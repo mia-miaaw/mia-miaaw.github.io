@@ -13,7 +13,6 @@ plugins:
 
 # Eksklusi file/folder yang tidak perlu
 exclude:
-  - Gemfile
   - Gemfile.lock
   - node_modules
   - vendor
