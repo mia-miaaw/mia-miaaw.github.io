@@ -161,7 +161,13 @@
     if (!conv) return;
     const firstUserMsg = conv.messages.find(m => m.sender === 'user');
     if (firstUserMsg && firstUserMsg.text) {
-      let newTitle = firstUserMsg.text.length > 30 ? firstUserMsg.text.substring(0, 27) + '...' : firstUserMsg.text;
+      // Kita potong judul agar tidak terlalu panjang jika ada isi file lampiran di awal pesan
+      let titleText = firstUserMsg.text;
+      const fileIndex = titleText.indexOf('--- ISI BERKAS LAMPIRAN:');
+      if (fileIndex !== -1) {
+        titleText = titleText.substring(0, fileIndex).trim() || "Mengirim Berkas";
+      }
+      let newTitle = titleText.length > 30 ? titleText.substring(0, 27) + '...' : titleText;
       conv.title = newTitle;
     } else {
       conv.title = 'Obrolan Baru';
@@ -306,7 +312,42 @@
       body.className = 'message-body';
 
       if (sender === 'user') {
-        body.innerText = text; // User tidak perlu render HTML/Markdown
+        // Tampilkan versi ringkas di UI jika pesan berisi berkas yang sangat panjang
+        if (text.includes('--- ISI BERKAS LAMPIRAN:')) {
+          const displayDiv = document.createElement('div');
+          
+          // Pisahkan teks user asli dari berkas lampiran
+          const fileIndex = text.indexOf('--- ISI BERKAS LAMPIRAN:');
+          const userPrompt = text.substring(0, fileIndex).trim();
+          
+          if (userPrompt) {
+            const promptEl = document.createElement('p');
+            promptEl.innerText = userPrompt;
+            promptEl.style.marginBottom = '12px';
+            displayDiv.appendChild(promptEl);
+          }
+
+          // Render penanda lampiran yang rapi di balon obrolan user
+          const attachmentMarker = document.createElement('div');
+          attachmentMarker.className = 'ui-file-badge';
+          attachmentMarker.style.display = 'flex';
+          attachmentMarker.style.alignItems = 'center';
+          attachmentMarker.style.gap = '8px';
+          attachmentMarker.style.padding = '8px 12px';
+          attachmentMarker.style.background = 'rgba(255, 255, 255, 0.1)';
+          attachmentMarker.style.borderRadius = '8px';
+          attachmentMarker.style.fontSize = '0.85rem';
+          
+          attachmentMarker.innerHTML = `
+            <ion-icon name="document-text-outline" style="font-size: 1.2rem;"></ion-icon>
+            <span>Berkas teks berhasil dilampirkan & dibaca oleh AI</span>
+          `;
+          
+          displayDiv.appendChild(attachmentMarker);
+          body.appendChild(displayDiv);
+        } else {
+          body.innerText = text; 
+        }
       } else {
         // Render Markdown & Sanitasi Aman untuk AI
         body.classList.add('markdown-content');
@@ -484,64 +525,61 @@
     }
   }
 
-  // ---------- LOGIKA MEMBACA DAN MENGIRIM PESAN BESERTA LAMPIRAN BERKAS ----------
+  // ---------- LOGIKA PEMBACAAN FILE SECARA ASINKRONUS ----------
+  async function readAndFormatFiles() {
+    if (attachedFiles.length === 0) return "";
+    
+    const readPromises = attachedFiles.map(file => {
+      return new Promise((resolve) => {
+        if (file.size === 0) {
+          resolve(`\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n(Berkas kosong tanpa konten)\n--- AKHIR BERKAS ---`);
+          return;
+        }
+
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const content = e.target.result || "";
+          resolve(`\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n\`\`\`\n${content}\n\`\`\`\n--- AKHIR BERKAS ---`);
+        };
+        
+        reader.onerror = function() {
+          resolve(`\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n[Gagal membaca isi berkas ini]\n--- AKHIR BERKAS ---`);
+        };
+        
+        // Membaca file sebagai teks UTF-8
+        reader.readAsText(file);
+      });
+    });
+
+    const results = await Promise.all(readPromises);
+    return results.join('');
+  }
+
+  // ---------- PENGIRIMAN PESAN DAN FILEREADER ASYNC ----------
   async function sendUserMessage() {
     if (isWaitingResponse) {
       await showAlert('Tunggu', 'Harap tunggu respons AI saat ini selesai terlebih dahulu.');
       return;
     }
-    let rawText = messageInput.value?.trim();
     
-    // Membaca isi berkas-berkas yang dilampirkan
+    let rawText = messageInput.value?.trim();
+    let fileContentsText = "";
+
+    // Membaca isi berkas-berkas yang dilampirkan menggunakan FileReader asinkronus
     if (attachedFiles.length > 0) {
-      let fileContentsText = "";
-
       try {
-        const readPromises = attachedFiles.map(file => {
-          return new Promise((resolve, reject) => {
-            // Validasi jika ukuran file adalah 0 byte
-            if (file.size === 0) {
-              resolve({ name: file.name, content: "(Berkas kosong tanpa konten)" });
-              return;
-            }
-
-            const reader = new FileReader();
-            
-            // Callback ketika operasi pembacaan selesai sepenuhnya
-            reader.onloadend = () => {
-              if (reader.readyState === FileReader.DONE) {
-                resolve({
-                  name: file.name,
-                  content: reader.result || ""
-                });
-              } else {
-                reject(new Error("Pembacaan berkas tidak selesai dengan sempurna."));
-              }
-            };
-            
-            reader.onerror = () => reject(reader.error);
-            
-            // Baca berkas sebagai string teks UTF-8
-            reader.readAsText(file);
-          });
-        });
-
-        // Tunggu hingga seluruh pembacaan file paralel selesai
-        const readFiles = await readPromises;
-        
-        // Membungkus konten berkas ke format penulisan markdown agar dapat dipahami dengan baik oleh AI
-        fileContentsText = readFiles.map(f => {
-          return `\n\n--- ISI BERKAS LAMPIRAN: ${f.name} ---\n\`\`\`\n${f.content}\n\`\`\`\n--- AKHIR BERKAS ---`;
-        }).join('');
-
+        fileContentsText = await readAndFormatFiles();
       } catch (fileError) {
         console.error("Gagal memproses berkas lampiran:", fileError);
         await showAlert('Gagal', 'Terjadi kesalahan saat membaca isi berkas lampiran.');
         return;
       }
+    }
 
-      // Menggabungkan pesan teks masukan pengguna dengan kode isi berkas yang dilampirkan
-      rawText = rawText ? `${rawText}${fileContentsText}` : `Berikut adalah berkas lampiran teks yang saya kirim:${fileContentsText}`;
+    // Gabungkan teks input manual dengan payload isi berkas teks
+    if (fileContentsText) {
+      rawText = rawText ? `${rawText}${fileContentsText}` : `Berikut adalah isi dari berkas lampiran saya:${fileContentsText}`;
     }
 
     if (!rawText && attachedFiles.length === 0) {
@@ -549,15 +587,17 @@
       return;
     }
 
-    // Reset antrean berkas terlampir setelah berhasil diekstrak
+    // Reset antrean berkas terlampir setelah diekstrak sepenuhnya
     attachedFiles = [];
     renderFilePreviews();
 
+    // Simpan pesan gabungan lengkap ke dalam State percakapan
     addMessageToState('user', rawText);
     messageInput.value = '';
     messageInput.style.height = '40px'; // Kembalikan tinggi input ke semula
     renderCurrentChat();
 
+    // Jalankan Stream AI
     await executeAIStream(rawText);
   }
 
