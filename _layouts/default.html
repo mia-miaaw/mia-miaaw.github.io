@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="id">
+{% include head.html %}
+<body>
+  {{ content }}
+
+  <!-- Ionic Core & Ionicons -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+  
+  <!-- Aplikasi Utama -->
+  <script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+</body>
+</html>
