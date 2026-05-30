@@ -294,6 +294,7 @@
       background: #ffffff;
       border-color: #4f46e5;
       box-shadow: 0 4px 18px rgba(79, 70, 229, 0.1);
+      overflow-y: auto;
     }
 
     /* Textarea Responsif: Mengembang dari 1 baris ke 3 baris */
@@ -314,6 +315,7 @@
       color: #1f2937;
       transition: height 0.2s ease-in-out;
       box-sizing: border-box;
+      overflow-y: hidden;
     }
 
     /* Tombol Klip Unggah File */
