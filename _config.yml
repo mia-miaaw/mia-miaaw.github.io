@@ -1,0 +1,19 @@
+# Site settings
+title: AI Chat by MIA
+description: Aplikasi chat AI dengan streaming real-time, lampiran file, dan riwayat percakapan.
+baseurl: ""  # jika deploy di subpath, misal "/my-chat-app"
+url: ""      # domain utama, kosong untuk lokal
+
+# Build settings
+markdown: kramdown
+theme: null
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Eksklusi file/folder yang tidak perlu
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
