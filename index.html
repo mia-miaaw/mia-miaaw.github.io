@@ -52,24 +52,7 @@ title: AI Chat - MIA
         </div>
       </ion-content>
 
-      <!-- FOOTER INPUT & LAMPIRAN -->
-      <ion-footer>
-        <ion-toolbar>
-          <div class="footer-wrapper">
-            <div id="attachment-preview-container" class="attachment-preview-container"></div>
-            <div class="input-container-modern">
-              <button id="attach-file-btn" class="attach-btn" type="button">
-                <ion-icon name="add-circle-outline"></ion-icon>
-              </button>
-              <input type="file" id="hidden-file-input" class="hidden-input" multiple>
-              <textarea id="message-input" class="modern-textarea" placeholder="Tanyakan sesuatu... (Shift+Enter untuk baris baru)" rows="1" autocomplete="off"></textarea>
-              <button id="send-message-btn" class="send-btn-modern" type="button">
-                <ion-icon name="arrow-up-circle"></ion-icon>
-              </button>
-            </div>
-          </div>
-        </ion-toolbar>
-      </ion-footer>
+ {% includes footer.html %}
 
       <ion-fab id="scroll-top-fab" class="scroll-top-fab" vertical="bottom" horizontal="end" slot="fixed" style="display: none;">
         <ion-fab-button size="small" color="light" id="scroll-top-btn">
