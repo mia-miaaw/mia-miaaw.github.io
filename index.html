@@ -10,19 +10,8 @@ title: AI Chat - MIA
 
     <!-- KONTEN UTAMA CHAT -->
     <div class="ion-page" id="main-content">
-      <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-menu-button menu="chatHistoryMenu"></ion-menu-button>
-          </ion-buttons>
-          <ion-title id="chat-title" style="font-weight: 600;">Percakapan AI</ion-title>
-          <ion-buttons slot="end">
-            <ion-button id="clear-current-chat-btn" fill="clear">
-              <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+
+ {% include header.html %}
 
       <ion-content id="chat-content" scroll-events="true">
         <div class="chat-container" id="messages-container">
