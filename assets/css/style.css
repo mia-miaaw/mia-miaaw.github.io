@@ -267,33 +267,149 @@
       background: white;
       border-top: 1px solid #f3f4f6;
     }
-    .input-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
+
+    /* GAYA FOOTER INPUT BARU (MODERN & DINAMIS) */
+    .footer-wrapper {
       max-width: 850px;
       margin: 0 auto;
       width: 100%;
+      padding: 10px 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-container-modern {
+      display: flex;
+      align-items: flex-end;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      padding: 4px 8px 4px 12px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       box-sizing: border-box;
     }
-    ion-input {
-      --padding-start: 16px;
-      --padding-end: 16px;
-      --background: #f3f4f6;
-      border-radius: 24px;
-      --border-radius: 24px;
-      --box-shadow: none;
-      --highlight-color-focused: transparent;
+
+    .input-container-modern:focus-within {
+      background: #ffffff;
+      border-color: #4f46e5;
+      box-shadow: 0 4px 18px rgba(79, 70, 229, 0.1);
+    }
+
+    /* Textarea Responsif: Mengembang dari 1 baris ke 3 baris */
+    .modern-textarea {
       flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
       font-size: 0.95rem;
-    }
-    .send-btn {
+      line-height: 1.5;
+      padding: 10px 8px;
       margin: 0;
-      --border-radius: 50%;
+      min-height: 40px;
+      max-height: 120px;
       height: 40px;
-      width: 40px;
+      resize: none;
+      color: #1f2937;
+      transition: height 0.2s ease-in-out;
+      box-sizing: border-box;
     }
+
+    /* Tombol Klip Unggah File */
+    .attach-btn {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #6b7280;
+      font-size: 1.5rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
+    .attach-btn:hover {
+      color: #4f46e5;
+      background: rgba(79, 70, 229, 0.08);
+    }
+
+    /* Tombol Kirim Bundar Khas AI Modern */
+    .send-btn-modern {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #4f46e5;
+      font-size: 1.7rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: transform 0.15s ease;
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
+    .send-btn-modern:hover {
+      transform: scale(1.08);
+    }
+
+    .send-btn-modern:active {
+      transform: scale(0.92);
+    }
+
+    /* Sembunyikan Input File Bawaan Browser */
+    .hidden-input {
+      display: none;
+    }
+
+    /* Cip Pratinjau Berkas */
+    .attachment-preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+      width: 100%;
+    }
+
+    .file-chip {
+      display: inline-flex;
+      align-items: center;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: #1e40af;
+      gap: 6px;
+      animation: popIn 0.2s ease-out;
+    }
+
+    .file-chip button {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 0;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
     ion-split-pane {
       --side-width: var(--sidebar-width);
       --side-max-width: 320px;
