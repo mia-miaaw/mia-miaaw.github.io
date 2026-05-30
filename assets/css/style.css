@@ -1,0 +1,303 @@
+    /* Desain Sistem Global & Variabel Warna */
+    :root {
+      --chat-user-bg: #f3f4f6; /* Abu-abu netral tipis untuk User */
+      --chat-ai-bg: transparent; /* Flat tanpa background untuk AI, mirip Gemini */
+      --chat-user-color: #1f2937;
+      --chat-ai-color: #1f2937;
+      --sidebar-width: 290px;
+    }
+
+    body, ion-app, ion-item, ion-label, ion-title, ion-button {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Container utama obrolan bergaya datar */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px 40px 16px;
+      gap: 28px; /* Jarak renggang antar percakapan bergaya Copilot/Gemini */
+      max-width: 850px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Message Item - Perbaikan Struktur Flexbox */
+    .message {
+      display: flex;
+      width: 100%;
+      gap: 12px;
+      box-sizing: border-box;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    /* Alinyemen Khusus Berdasarkan Pengirim */
+    .message.user {
+      justify-content: flex-end; /* Dorong semua konten ke kanan */
+    }
+
+    .message.ai {
+      justify-content: flex-start; /* Dorong semua konten ke kiri */
+    }
+
+    /* Avatar Bulat */
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 15%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    /* Aturan Urutan Flex (Order) agar Struktur HTML Tetap Konsisten */
+    .message.user .message-avatar {
+      background: #4f46e5;
+      color: #ffffff;
+      order: 2; /* Avatar ditaruh paling kanan */
+    }
+
+    .message.ai .message-avatar {
+      background: #10b981;
+      color: #ffffff;
+      order: 1; /* Avatar ditaruh paling kiri */
+    }
+
+    /* Wadah Utama Konten Pesan */
+    .message-body-container {
+      max-width: calc(100% - 44px); /* Sisakan ruang untuk avatar agar tidak overlap */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message.user .message-body-container {
+      align-items: flex-end; /* Teks user merapat ke kanan */
+      order: 1; /* Konten ditaruh di sebelah kiri avatar */
+    }
+
+    .message.ai .message-body-container {
+      align-items: flex-start; /* Teks AI merapat ke kiri */
+      order: 2; /* Konten ditaruh di sebelah kanan avatar */
+      width: 100%;
+    }
+
+    /* Gelembung Pesan Flat */
+    .message-body {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
+
+    /* Gelembung Spesifik User */
+    .message.user .message-body {
+      background: var(--chat-user-bg);
+      color: var(--chat-user-color);
+      padding: 10px 16px;
+      border-radius: 18px;
+    }
+
+    /* Gelembung Spesifik AI (Gemini Style - Borderless / No Background) */
+    .message.ai .message-body {
+      background: var(--chat-ai-bg);
+      color: var(--chat-ai-color);
+      padding: 4px 0;
+      width: 100%;
+    }
+
+    /* Styling Konten Markdown */
+    .markdown-content p {
+      margin: 0 0 12px 0;
+    }
+    .markdown-content p:last-child {
+      margin-bottom: 0;
+    }
+    .markdown-content ul, .markdown-content ol {
+      margin: 0 0 12px 20px;
+      padding: 0;
+    }
+    .markdown-content li {
+      margin-bottom: 4px;
+    }
+    .markdown-content h1, .markdown-content h2, .markdown-content h3, 
+    .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+      color: #111827;
+      font-weight: 600;
+      margin: 20px 0 10px 0;
+    }
+    .markdown-content h1 { font-size: 1.35rem; }
+    .markdown-content h2 { font-size: 1.2rem; }
+    .markdown-content h3 { font-size: 1.05rem; }
+
+    /* Blok Kode Modern & Tombol Salin */
+    .code-block-wrapper {
+      position: relative;
+      background: #1e1e2e;
+      border-radius: 8px;
+      margin: 14px 0;
+      border: 1px solid #313244;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #181825;
+      padding: 6px 14px;
+      font-size: 0.7rem;
+      color: #cdd6f4;
+      border-bottom: 1px solid #313244;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: #a6adc8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #313244;
+      color: #f5c2e7;
+    }
+
+    .code-block-wrapper pre {
+      margin: 0;
+      padding: 12px 14px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: #cdd6f4;
+    }
+
+    /* Tabel di dalam Markdown */
+    .markdown-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.85rem;
+    }
+    .markdown-content th, .markdown-content td {
+      border: 1px solid #e5e7eb;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .markdown-content th {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+
+    /* Typing indicator flat style */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 0 12px 44px; /* Samakan posisi horizontal dengan text body AI */
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #9ca3af;
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Custom scroll to top fab */
+    .scroll-top-fab {
+      bottom: 80px;
+      right: 16px;
+    }
+
+    /* Styling Sidebar & Conversation List */
+    .conversation-item {
+      --padding-start: 16px;
+      --padding-end: 8px;
+      --inner-padding-end: 0px;
+      cursor: pointer;
+    }
+    .conversation-item.active {
+      --background: #f3f4f6;
+      font-weight: 500;
+    }
+    .delete-conv-btn {
+      margin: 0;
+      height: 32px;
+    }
+
+    .empty-chat {
+      text-align: center;
+      color: #9ca3af;
+      margin-top: 80px;
+      font-size: 0.95rem;
+    }
+
+    ion-footer {
+      background: white;
+      border-top: 1px solid #f3f4f6;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      max-width: 850px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    ion-input {
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --background: #f3f4f6;
+      border-radius: 24px;
+      --border-radius: 24px;
+      --box-shadow: none;
+      --highlight-color-focused: transparent;
+      flex: 1;
+      font-size: 0.95rem;
+    }
+    .send-btn {
+      margin: 0;
+      --border-radius: 50%;
+      height: 40px;
+      width: 40px;
+    }
+    ion-split-pane {
+      --side-width: var(--sidebar-width);
+      --side-max-width: 320px;
+    }
+    ion-menu {
+      --width: var(--sidebar-width);
+    }
