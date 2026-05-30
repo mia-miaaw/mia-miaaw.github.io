@@ -7,6 +7,7 @@
   let currentConversationId = null;
   let isWaitingResponse = false; // mencegah double-submission
   let currentTypingIndicatorElement = null;
+  let attachedFiles = [];        // Menyimpan objek file terpilih secara lokal
 
   // DOM references
   let messagesContainer;
@@ -17,6 +18,9 @@
   let sendBtn;
   let scrollTopFab;
   let chatTitleEl;
+  let attachFileBtn;
+  let hiddenFileInput;
+  let attachmentPreviewContainer;
 
   // Custom Markdown renderer dengan bungkus Copy-Code modern
   const renderer = new marked.Renderer();
@@ -43,7 +47,6 @@
   window.copyToClipboard = function(button, codeText) {
     const textarea = document.createElement('textarea');
     textarea.value = codeText;
-    // Sembunyikan textarea secara visual agar tidak merusak tata letak saat disalin
     textarea.style.position = 'fixed';
     textarea.style.opacity = '0';
     textarea.style.left = '-9999px';
@@ -76,11 +79,9 @@
     const button = e.target.closest('.copy-btn');
     if (button) {
       e.preventDefault();
-      // Temukan blok kode terkait di dalam wrapper yang sama
       const wrapper = button.closest('.code-block-wrapper');
       const codeElement = wrapper ? wrapper.querySelector('pre code') : null;
       if (codeElement) {
-        // Mengambil innerText langsung memberikan string teks murni tanpa format HTML
         window.copyToClipboard(button, codeElement.innerText);
       }
     }
@@ -466,6 +467,7 @@
     } finally {
       isWaitingResponse = false;
       messageInput.value = '';
+      messageInput.style.height = '40px'; // Kembalikan tinggi textarea ke default
       renderCurrentChat();
     }
   }
@@ -487,14 +489,26 @@
       await showAlert('Tunggu', 'Harap tunggu respons AI saat ini selesai terlebih dahulu.');
       return;
     }
-    const rawText = messageInput.value?.trim();
-    if (!rawText) {
+    let rawText = messageInput.value?.trim();
+    
+    // Gabungkan lampiran berkas jika ada berkas terlampir
+    if (attachedFiles.length > 0) {
+      const fileNames = attachedFiles.map(f => `[Lampiran Berkas: ${f.name}]`).join(' ');
+      rawText = rawText ? `${rawText}\n\n${fileNames}` : `Mengirim berkas terlampir: ${fileNames}`;
+    }
+
+    if (!rawText && attachedFiles.length === 0) {
       await showAlert('Pesan kosong', 'Tolong ketikkan isi pesan Anda.');
       return;
     }
 
+    // Reset antrean berkas terlampir
+    attachedFiles = [];
+    renderFilePreviews();
+
     addMessageToState('user', rawText);
     messageInput.value = '';
+    messageInput.style.height = '40px'; // Reset tinggi input ke satu baris
     renderCurrentChat();
 
     await executeAIStream(rawText);
@@ -529,6 +543,7 @@
     renderCurrentChat();
     chatTitleEl.innerText = conv.title;
     messageInput.value = '';
+    messageInput.style.height = '40px'; // Setel ulang tinggi textarea
   }
 
   async function clearCurrentChat() {
@@ -587,6 +602,74 @@
     });
   }
 
+  // ---------- LOGIKA INPUT MULTI-ROW & LAMPIRAN BERKAS ----------
+  function setupModernInputEvents() {
+    // 1. Ekspansi Otomatis Textarea ketika Berfokus (Focus) ke 100px (~3 baris)
+    messageInput.addEventListener('focus', () => {
+      messageInput.style.height = '100px';
+    });
+
+    // 2. Mengempiskan kembali jika tidak berfokus (Blur) dan kosong (1 baris)
+    messageInput.addEventListener('blur', () => {
+      if (!messageInput.value.trim()) {
+        messageInput.style.height = '40px';
+      }
+    });
+
+    // 3. Menyesuaikan tinggi dinamis sewaktu mengetik
+    messageInput.addEventListener('input', () => {
+      if (messageInput.value.trim() === '') {
+        messageInput.style.height = '40px';
+      } else {
+        messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+      }
+    });
+
+    // 4. Trigger Tombol Unggah Berkas
+    attachFileBtn.addEventListener('click', () => {
+      hiddenFileInput.click();
+    });
+
+    // 5. Tangkap Berkas Terpilih
+    hiddenFileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        if (!attachedFiles.some(f => f.name === file.name)) {
+          attachedFiles.push(file);
+        }
+      });
+      renderFilePreviews();
+      
+      // Fokuskan kembali ke textarea setelah memilih berkas agar meluas
+      messageInput.focus();
+    });
+  }
+
+  // Merender cip visual untuk berkas yang siap dikirim
+  function renderFilePreviews() {
+    attachmentPreviewContainer.innerHTML = '';
+    attachedFiles.forEach((file, index) => {
+      const chip = document.createElement('div');
+      chip.className = 'file-chip';
+      chip.innerHTML = `
+        <ion-icon name="document-attach-outline"></ion-icon>
+        <span style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(file.name)}</span>
+        <button type="button" data-index="${index}">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      `;
+
+      // Hapus lampiran
+      chip.querySelector('button').addEventListener('click', (e) => {
+        e.stopPropagation();
+        attachedFiles.splice(index, 1);
+        renderFilePreviews();
+      });
+
+      attachmentPreviewContainer.appendChild(chip);
+    });
+  }
+
   // ---------- INITIALIZE APP ----------
   function init() {
     loadFromLocalStorage();
@@ -597,6 +680,11 @@
     sendBtn = document.getElementById('send-message-btn');
     scrollTopFab = document.getElementById('scroll-top-fab');
     chatTitleEl = document.getElementById('chat-title');
+    
+    // Inisialisasi Elemen Attachment Baru
+    attachFileBtn = document.getElementById('attach-file-btn');
+    hiddenFileInput = document.getElementById('hidden-file-input');
+    attachmentPreviewContainer = document.getElementById('attachment-preview-container');
 
     renderSidebar();
     renderCurrentChat();
@@ -604,16 +692,21 @@
     if (curConv) chatTitleEl.innerText = curConv.title;
 
     sendBtn.addEventListener('click', () => sendUserMessage());
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
+    
+    // Penanganan Tombol Keyboard (Shift+Enter untuk baris baru, Enter biasa kirim)
+    messageInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendUserMessage();
       }
     });
+
     document.getElementById('new-chat-btn')?.addEventListener('click', () => createNewChat());
     document.getElementById('clear-current-chat-btn')?.addEventListener('click', () => clearCurrentChat());
     document.getElementById('scroll-top-btn')?.addEventListener('click', () => scrollToTop());
 
+    // Jalankan listener event kustom input baru
+    setupModernInputEvents();
     initScrollListener();
 
     setTimeout(() => {
