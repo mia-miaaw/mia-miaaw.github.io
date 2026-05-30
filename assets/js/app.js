@@ -161,7 +161,7 @@
     if (!conv) return;
     const firstUserMsg = conv.messages.find(m => m.sender === 'user');
     if (firstUserMsg && firstUserMsg.text) {
-      // Kita potong judul agar tidak terlalu panjang jika ada isi file lampiran di awal pesan
+      // Potong judul agar tidak terlalu panjang jika ada isi file lampiran di awal pesan
       let titleText = firstUserMsg.text;
       const fileIndex = titleText.indexOf('--- ISI BERKAS LAMPIRAN:');
       if (fileIndex !== -1) {
@@ -259,7 +259,7 @@
     });
   }
 
-  // ---------- RENDER CHAT FLAT (GEMINI STYLE FIXED FLEXBOX) ----------
+  // ---------- RENDER CHAT FLAT ----------
   function renderCurrentChat() {
     if (!messagesContainer) return;
     const currentConv = conversations.find(c => c.id === currentConversationId);
@@ -298,13 +298,13 @@
         messageDiv.id = 'streaming-message-node';
       }
 
-      // 1. Avatar Bulat Singkat
+      // 1. Avatar Bulat
       const avatar = document.createElement('div');
       avatar.className = 'message-avatar';
       avatar.innerText = sender === 'user' ? 'U' : 'AI';
       messageDiv.appendChild(avatar);
 
-      // 2. Kontainer Badan Utama (untuk penanganan flexbox alignment)
+      // 2. Kontainer Badan Utama
       const bodyContainer = document.createElement('div');
       bodyContainer.className = 'message-body-container';
 
@@ -327,20 +327,34 @@
             displayDiv.appendChild(promptEl);
           }
 
+          // Cari tahu nama file yang berhasil dimasukkan
+          const regex = /--- ISI BERKAS LAMPIRAN:\s*([^\s-]+)/g;
+          let match;
+          const detectedFileNames = [];
+          while ((match = regex.exec(text)) !== null) {
+            detectedFileNames.push(match[1]);
+          }
+
           // Render penanda lampiran yang rapi di balon obrolan user
           const attachmentMarker = document.createElement('div');
           attachmentMarker.className = 'ui-file-badge';
           attachmentMarker.style.display = 'flex';
-          attachmentMarker.style.alignItems = 'center';
-          attachmentMarker.style.gap = '8px';
+          attachmentMarker.style.flexDirection = 'column';
+          attachmentMarker.style.gap = '4px';
           attachmentMarker.style.padding = '8px 12px';
           attachmentMarker.style.background = 'rgba(255, 255, 255, 0.1)';
           attachmentMarker.style.borderRadius = '8px';
           attachmentMarker.style.fontSize = '0.85rem';
           
+          let fileListText = detectedFileNames.length > 0 
+            ? detectedFileNames.join(', ') 
+            : 'Berkas';
+
           attachmentMarker.innerHTML = `
-            <ion-icon name="document-text-outline" style="font-size: 1.2rem;"></ion-icon>
-            <span>Berkas teks berhasil dilampirkan & dibaca oleh AI</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <ion-icon name="document-text-outline" style="font-size: 1.2rem; color: #38bdf8;"></ion-icon>
+              <span><strong>Membaca ${detectedFileNames.length} berkas:</strong> ${escapeHtml(fileListText)}</span>
+            </div>
           `;
           
           displayDiv.appendChild(attachmentMarker);
@@ -556,7 +570,7 @@
     return results.join('');
   }
 
-  // ---------- PENGIRIMAN PESAN DAN FILEREADER ASYNC ----------
+  // ---------- PENGIRIMAN PESAN ----------
   async function sendUserMessage() {
     if (isWaitingResponse) {
       await showAlert('Tunggu', 'Harap tunggu respons AI saat ini selesai terlebih dahulu.');
@@ -713,42 +727,60 @@
     });
 
     // 4. Trigger Tombol Unggah Berkas
-    attachFileBtn.addEventListener('click', () => {
+    attachFileBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       hiddenFileInput.click();
     });
 
-    // 5. Tangkap Berkas Terpilih
-    hiddenFileInput.addEventListener('change', (e) => {
+    // 5. Tangkap Berkas Terpilih (Ditambah RESET VALUE agar file yang sama bisa terpilih kembali)
+    hiddenFileInput.addEventListener('change', function(e) {
       const files = Array.from(e.target.files);
-      files.forEach(file => {
-        if (!attachedFiles.some(f => f.name === file.name)) {
-          attachedFiles.push(file);
-        }
-      });
-      renderFilePreviews();
-      
-      // Fokuskan kembali ke textarea setelah memilih berkas agar meluas
-      messageInput.focus();
+      if (files.length > 0) {
+        files.forEach(file => {
+          // Cek duplikasi berdasarkan nama dan ukuran
+          const isExist = attachedFiles.some(f => f.name === file.name && f.size === file.size);
+          if (!isExist) {
+            attachedFiles.push(file);
+          }
+        });
+        renderFilePreviews();
+        
+        // Sangat Penting: Reset value input agar event 'change' terpancing jika file yang sama di-upload ulang
+        this.value = '';
+        
+        // Fokuskan kembali ke textarea setelah memilih berkas agar meluas
+        messageInput.focus();
+      }
     });
   }
 
   // Merender cip visual untuk berkas yang siap dikirim
   function renderFilePreviews() {
+    if (!attachmentPreviewContainer) return;
     attachmentPreviewContainer.innerHTML = '';
+    
+    if (attachedFiles.length === 0) {
+      attachmentPreviewContainer.style.display = 'none';
+      return;
+    }
+
+    attachmentPreviewContainer.style.display = 'flex';
+    
     attachedFiles.forEach((file, index) => {
       const chip = document.createElement('div');
       chip.className = 'file-chip';
       chip.innerHTML = `
         <ion-icon name="document-attach-outline"></ion-icon>
         <span style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(file.name)}</span>
-        <button type="button" data-index="${index}">
+        <button type="button" class="remove-file-btn" data-index="${index}">
           <ion-icon name="close-circle"></ion-icon>
         </button>
       `;
 
       // Hapus lampiran
-      chip.querySelector('button').addEventListener('click', (e) => {
+      chip.querySelector('.remove-file-btn').addEventListener('click', (e) => {
         e.stopPropagation();
+        e.preventDefault();
         attachedFiles.splice(index, 1);
         renderFilePreviews();
       });
