@@ -20,22 +20,22 @@
 
       // Custom Markdown renderer dengan bungkus Copy-Code modern
       const renderer = new marked.Renderer();
-      renderer.code = function({ text, lang }) {
-        const language = lang || 'code';
-        const escapedCode = text.replace(/"/g, '&quot;');
-        return `
-          <div class="code-block-wrapper">
-            <div class="code-header">
-              <span>${language.toUpperCase()}</span>
-              <button class="copy-btn" onclick="window.copyToClipboard(this, \`${escapedCode}\`)">
-                <ion-icon name="copy-outline"></ion-icon>
-                <span>Salin</span>
-              </button>
-            </div>
-            <pre><code class="language-${language}">${escapeHtml(text)}</code></pre>
-          </div>
-        `;
-      };
+renderer.code = function({ text, lang }) {
+  const language = lang || 'code';
+  const uid = 'copy-btn-' + Math.random().toString(36).substr(2, 8);
+  return `
+    <div class="code-block-wrapper">
+      <div class="code-header">
+        <span>${language.toUpperCase()}</span>
+        <button class="copy-btn" data-copy="${escapeHtml(text).replace(/"/g, '&quot;')}" data-uid="${uid}">
+          <ion-icon name="copy-outline"></ion-icon>
+          <span>Salin</span>
+        </button>
+      </div>
+      <pre><code class="language-${language}">${escapeHtml(text)}</code></pre>
+    </div>
+  `;
+};
 
       marked.setOptions({ renderer });
 
