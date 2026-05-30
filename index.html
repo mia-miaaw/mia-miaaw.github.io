@@ -1,102 +1,81 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AI Chat</title>
+---
+layout: default
+title: AI Chat - MIA
+---
 
-  <!-- Ionic Core 8 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@8/css/ionic.bundle.css" />
-  <link rel="stylesheet" href="./assets/css/style.css" />
+<ion-app>
+  <ion-split-pane content-id="main-content" when="md">
 
-  <!-- Google Fonts: Inter & JetBrains Mono untuk Kode -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- SIDEBAR RIWAYAT -->
+    <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title style="font-weight: 600;">Riwayat Chat</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="new-chat-btn">
+              <ion-icon slot="icon-only" name="chatbubble-ellipses-outline" color="primary"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list id="conversation-list" lines="full">
+          <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
+            <ion-label class="ion-text-center" color="medium">Memuat riwayat...</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
 
-  <!-- Markdown Parser & XSS Sanitizer -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-  
-</head>
-<body>
-  <ion-app>
-    <ion-split-pane content-id="main-content" when="md">
+    <!-- KONTEN UTAMA CHAT -->
+    <div class="ion-page" id="main-content">
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button menu="chatHistoryMenu"></ion-menu-button>
+          </ion-buttons>
+          <ion-title id="chat-title" style="font-weight: 600;">Percakapan AI</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="clear-current-chat-btn" fill="clear">
+              <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
 
-      <!-- SIDEBAR: Riwayat Chat -->
-      <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title style="font-weight: 600;">Riwayat Chat</ion-title>
-            <ion-buttons slot="end">
-              <ion-button id="new-chat-btn">
-                <ion-icon slot="icon-only" name="chatbubble-ellipses-outline" color="primary"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content>
-          <ion-list id="conversation-list" lines="full">
-            <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
-              <ion-label class="ion-text-center" color="medium">Memuat riwayat...</ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-menu>
+      <ion-content id="chat-content" scroll-events="true">
+        <div class="chat-container" id="messages-container">
+          <div class="empty-chat" style="display: none;" id="empty-chat-placeholder">
+            <ion-icon name="sparkles-outline" style="font-size: 54px; color: #cbd5e1; margin-bottom: 12px;"></ion-icon>
+            <p class="text-slate-500">Mulai sesi baru bersama AI MIA.<br>Ketik pertanyaan teknis atau umum di bawah!</p>
+          </div>
+        </div>
+      </ion-content>
 
-      <!-- CONTENT UTAMA CHAT -->
-      <div class="ion-page" id="main-content">
-        <ion-header>
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-menu-button menu="chatHistoryMenu"></ion-menu-button>
-            </ion-buttons>
-            <ion-title id="chat-title" style="font-weight: 600;">Percakapan AI</ion-title>
-            <ion-buttons slot="end">
-              <ion-button id="clear-current-chat-btn" fill="clear">
-                <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-
-        <ion-content id="chat-content" scroll-events="true">
-          <div class="chat-container" id="messages-container">
-            <!-- Pesan akan dirender disini -->
-            <div class="empty-chat" style="display: none;" id="empty-chat-placeholder">
-              <ion-icon name="sparkles-outline" style="font-size: 54px; color: #cbd5e1; margin-bottom: 12px;"></ion-icon>
-              <p class="text-slate-500">Mulai sesi baru bersama AI MIA.<br>Ketik pertanyaan teknis atau umum di bawah!</p>
+      <!-- FOOTER INPUT & LAMPIRAN -->
+      <ion-footer>
+        <ion-toolbar>
+          <div class="footer-wrapper">
+            <div id="attachment-preview-container" class="attachment-preview-container"></div>
+            <div class="input-container-modern">
+              <button id="attach-file-btn" class="attach-btn" type="button">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </button>
+              <input type="file" id="hidden-file-input" class="hidden-input" multiple>
+              <textarea id="message-input" class="modern-textarea" placeholder="Tanyakan sesuatu... (Shift+Enter untuk baris baru)" rows="1" autocomplete="off"></textarea>
+              <button id="send-message-btn" class="send-btn-modern" type="button">
+                <ion-icon name="arrow-up-circle"></ion-icon>
+              </button>
             </div>
           </div>
-        </ion-content>
+        </ion-toolbar>
+      </ion-footer>
 
-        <ion-footer>
-          <ion-toolbar>
-            <div class="input-container">
-              <ion-input id="message-input" placeholder="Tanyakan sesuatu..." value="" autocomplete="off"></ion-input>
-            <ion-buttons>
-              <ion-button id="send-message-btn" class="send-btn" fill="clear" color="primary">
-                <ion-icon name="send" slot="icon-only"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            </div>
-          </ion-toolbar>
-        </ion-footer>
-
-        <!-- Scroll to top FAB -->
-        <ion-fab id="scroll-top-fab" class="scroll-top-fab" vertical="bottom" horizontal="end" slot="fixed" style="display: none;">
-          <ion-fab-button size="small" color="light" id="scroll-top-btn">
-            <ion-icon name="arrow-up-outline"></ion-icon>
-          </ion-fab-button>
-        </ion-fab>
-      </div>
-    </ion-split-pane>
-  </ion-app>
-
-  <!-- IONIC CORE & IONICONS CDN -->
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.esm.js"></script>
-  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.js"></script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
-  <script src="./assets/js/app.js"></script>
-  
-</body>
-</html>
+      <ion-fab id="scroll-top-fab" class="scroll-top-fab" vertical="bottom" horizontal="end" slot="fixed" style="display: none;">
+        <ion-fab-button size="small" color="light" id="scroll-top-btn">
+          <ion-icon name="arrow-up-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+    </div>
+  </ion-split-pane>
+</ion-app>
