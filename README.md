@@ -30,14 +30,14 @@ Aplikasi ini menggunakan beberapa pustaka gratis berkualitas tinggi yang dimuat 
 ### 1. Kloning Repositori
 Unduh atau klon repositori ini ke dalam komputer lokal Anda:
 ```bash
-git clone [https://github.com/username/ai-chat-mia.git](https://github.com/username/ai-chat-mia.git)
+git clone https://github.com/mia-miaaw/mia-miaaw.github.io.git
 
 ```
 ### 2. Konfigurasi Endpoint API
 Buka berkas assets/js/app.js, lalu cari baris **Global Config** di bagian paling atas. Ubah nilai API_BASE_URL sesuai dengan alamat endpoint Cloudflare Workers Anda yang aktif:
 ```javascript
 // assets/js/app.js
-const API_BASE_URL = '[https://ai-coding-worker.daffadev.workers.dev](https://ai-coding-worker.daffadev.workers.dev)'; // Ganti dengan URL Workers Anda
+const API_BASE_URL = 'https://ai-coding-worker.cloudflare.workers.dev'; // Ganti
 
 ```
 ### 3. Jalankan Secara Lokal
