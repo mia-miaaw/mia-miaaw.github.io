@@ -262,29 +262,34 @@
   }
 
   // ---------- RENDER CHAT FLAT ----------
-  function renderCurrentChat() {
-    if (!messagesContainer) return;
-    const currentConv = conversations.find(c => c.id === currentConversationId);
-    if (!currentConv) return;
+ function renderCurrentChat() {
+  if (!messagesContainer) return;
+  const currentConv = conversations.find(c => c.id === currentConversationId);
+  if (!currentConv) return;
 
-    messagesContainer.innerHTML = '';
-    const messages = currentConv.messages;
-    if (messages.length === 0) {
-      emptyPlaceholder.style.display = 'flex';
-    } else {
-      emptyPlaceholder.style.display = 'none';
-      messages.forEach(msg => {
-        appendMessageToDom(msg.sender, msg.text, false);
-      });
-    }
-
-    if (isWaitingResponse) {
-      showTypingIndicatorOnly();
-    } else {
-      removeTypingIndicator();
-    }
-    scrollToBottom();
+  messagesContainer.innerHTML = '';
+  const messages = currentConv.messages;
+  
+  // Periksa apakah obrolan benar-benar kosong
+  if (!messages || messages.length === 0) {
+    // Tampilkan welcome screen secara flex penuh
+    emptyPlaceholder.style.setProperty('display', 'flex', 'important');
+  } else {
+    // Sembunyikan jika sudah ada riwayat obrolan
+    emptyPlaceholder.style.setProperty('display', 'none', 'important');
+    
+    messages.forEach(msg => {
+      appendMessageToDom(msg.sender, msg.text, false);
+    });
   }
+
+  if (isWaitingResponse) {
+    showTypingIndicatorOnly();
+  } else {
+    removeTypingIndicator();
+  }
+  scrollToBottom();
+}
 
   function appendMessageToDom(sender, text, isStreamChunk = false) {
     let messageDiv;
