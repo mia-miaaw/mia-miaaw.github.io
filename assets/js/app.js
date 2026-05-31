@@ -161,11 +161,13 @@
     if (!conv) return;
     const firstUserMsg = conv.messages.find(m => m.sender === 'user');
     if (firstUserMsg && firstUserMsg.text) {
-      // Potong judul agar tidak terlalu panjang jika ada isi file lampiran di awal pesan
       let titleText = firstUserMsg.text;
       const fileIndex = titleText.indexOf('--- ISI BERKAS LAMPIRAN:');
       if (fileIndex !== -1) {
         titleText = titleText.substring(0, fileIndex).trim() || "Mengirim Berkas";
+      } else if (titleText.startsWith('[MENGIRIM GAMBAR]')) {
+        const lines = titleText.split('\n');
+        titleText = lines.slice(1).join('\n').trim() || "Mengirim Gambar";
       }
       let newTitle = titleText.length > 30 ? titleText.substring(0, 27) + '...' : titleText;
       conv.title = newTitle;
@@ -312,11 +314,10 @@
       body.className = 'message-body';
 
       if (sender === 'user') {
-        // Tampilkan versi ringkas di UI jika pesan berisi berkas yang sangat panjang
+        // Tampilkan versi ringkas di UI jika pesan berisi berkas teks yang sangat panjang
         if (text.includes('--- ISI BERKAS LAMPIRAN:')) {
           const displayDiv = document.createElement('div');
           
-          // Pisahkan teks user asli dari berkas lampiran
           const fileIndex = text.indexOf('--- ISI BERKAS LAMPIRAN:');
           const userPrompt = text.substring(0, fileIndex).trim();
           
@@ -327,7 +328,6 @@
             displayDiv.appendChild(promptEl);
           }
 
-          // Cari tahu nama file yang berhasil dimasukkan
           const regex = /--- ISI BERKAS LAMPIRAN:\s*([^\s-]+)/g;
           let match;
           const detectedFileNames = [];
@@ -335,7 +335,6 @@
             detectedFileNames.push(match[1]);
           }
 
-          // Render penanda lampiran yang rapi di balon obrolan user
           const attachmentMarker = document.createElement('div');
           attachmentMarker.className = 'ui-file-badge';
           attachmentMarker.style.display = 'flex';
@@ -346,9 +345,7 @@
           attachmentMarker.style.borderRadius = '8px';
           attachmentMarker.style.fontSize = '0.85rem';
           
-          let fileListText = detectedFileNames.length > 0 
-            ? detectedFileNames.join(', ') 
-            : 'Berkas';
+          let fileListText = detectedFileNames.length > 0 ? detectedFileNames.join(', ') : 'Berkas';
 
           attachmentMarker.innerHTML = `
             <div style="display:flex; align-items:center; gap:8px;">
@@ -358,6 +355,33 @@
           `;
           
           displayDiv.appendChild(attachmentMarker);
+          body.appendChild(displayDiv);
+        } else if (text.startsWith('[MENGIRIM GAMBAR]')) {
+          // Kasus visual jika user mengunggah berkas gambar
+          const displayDiv = document.createElement('div');
+          const lines = text.split('\n');
+          const promptLine = lines.slice(1).join('\n').trim();
+
+          if (promptLine) {
+            const promptEl = document.createElement('p');
+            promptEl.innerText = promptLine;
+            promptEl.style.marginBottom = '12px';
+            displayDiv.appendChild(promptEl);
+          }
+
+          const imageMarker = document.createElement('div');
+          imageMarker.style.display = 'flex';
+          imageMarker.style.alignItems = 'center';
+          imageMarker.style.gap = '8px';
+          imageMarker.style.padding = '8px 12px';
+          imageMarker.style.background = 'rgba(255, 255, 255, 0.1)';
+          imageMarker.style.borderRadius = '8px';
+          imageMarker.style.fontSize = '0.85rem';
+          imageMarker.innerHTML = `
+            <ion-icon name="image-outline" style="font-size: 1.2rem; color: #10b981;"></ion-icon>
+            <span><strong>Mengunggah Gambar untuk dianalisis oleh AI</strong></span>
+          `;
+          displayDiv.appendChild(imageMarker);
           body.appendChild(displayDiv);
         } else {
           body.innerText = text; 
@@ -372,7 +396,6 @@
       bodyContainer.appendChild(body);
       messageDiv.appendChild(bodyContainer);
 
-      // Selalu pastikan ditaruh sebelum typing indicator jika ada
       const indicator = document.getElementById('live-typing-indicator');
       if (indicator) {
         messagesContainer.insertBefore(messageDiv, indicator);
@@ -380,7 +403,6 @@
         messagesContainer.appendChild(messageDiv);
       }
     } else {
-      // Melanjutkan data stream chunk yang masuk ke dalam kontainer
       const body = messageDiv.querySelector('.message-body');
       if (body) {
         const rawHtml = marked.parse(text);
@@ -432,7 +454,7 @@
   }
 
   // ---------- INTEGRASI STREAMING SSE REAL-TIME ----------
-  async function executeAIStream(userMessage) {
+  async function executeAIStream(userMessage, imageBase64 = null) {
     if (isWaitingResponse) return;
     isWaitingResponse = true;
 
@@ -442,7 +464,6 @@
     const conv = conversations.find(c => c.id === currentConversationId);
     if (!conv) return;
 
-    // Ambil riwayat chat lengkap untuk dikirim ke Worker
     const formattedMessages = conv.messages.map(m => ({
       role: m.sender === 'user' ? 'user' : 'assistant',
       content: m.text
@@ -459,7 +480,8 @@
         },
         body: JSON.stringify({
           sessionId: currentConversationId,
-          messages: formattedMessages
+          messages: formattedMessages,
+          image: imageBase64 // Kirim data base64 gambar jika ada
         })
       });
 
@@ -474,7 +496,6 @@
       const decoder = new TextDecoder('utf-8');
       let buffer = '';
 
-      // Loop pembacaan byte stream
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
@@ -493,20 +514,17 @@
           const textContent = parseSSELine(line);
           if (textContent) {
             responseTextAccumulator += textContent;
-            // Update DOM real-time ke user
             appendMessageToDom('ai', responseTextAccumulator, true);
             scrollToBottom();
           }
         }
       }
 
-      // Bersihkan penanda streaming node di DOM
       const streamingNode = document.getElementById('streaming-message-node');
       if (streamingNode) {
         streamingNode.removeAttribute('id');
       }
 
-      // Masukkan jawaban lengkap final ke array State obrolan
       if (responseTextAccumulator.trim()) {
         addMessageToState('ai', responseTextAccumulator.trim());
       }
@@ -522,11 +540,12 @@
     } finally {
       isWaitingResponse = false;
       messageInput.value = '';
-      messageInput.style.height = '40px'; // Kembalikan tinggi textarea ke default
+      messageInput.style.height = '40px'; 
       renderCurrentChat();
     }
   }
 
+  // Helper parser sse line
   function parseSSELine(line) {
     if (!line.startsWith('data: ')) return '';
     const data = line.slice(6).trim();
@@ -541,33 +560,46 @@
 
   // ---------- LOGIKA PEMBACAAN FILE SECARA ASINKRONUS ----------
   async function readAndFormatFiles() {
-    if (attachedFiles.length === 0) return "";
+    if (attachedFiles.length === 0) return { textPayload: "", imagePayload: null };
     
+    let textPayload = "";
+    let imagePayload = null;
+
     const readPromises = attachedFiles.map(file => {
       return new Promise((resolve) => {
-        if (file.size === 0) {
-          resolve(`\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n(Berkas kosong tanpa konten)\n--- AKHIR BERKAS ---`);
-          return;
+        // Deteksi jika file merupakan gambar
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePayload = e.target.result; // Menghasilkan Base64 Data URL gambar
+            resolve({ type: 'image', name: file.name });
+          };
+          reader.onerror = () => resolve({ type: 'error' });
+          reader.readAsDataURL(file);
+        } else {
+          // File teks biasa
+          if (file.size === 0) {
+            resolve({ type: 'text', content: `\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n(Berkas kosong tanpa konten)\n--- AKHIR BERKAS ---` });
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            resolve({ type: 'text', content: `\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n\`\`\`\n${e.target.result || ""}\n\`\`\`\n--- AKHIR BERKAS ---` });
+          };
+          reader.onerror = () => resolve({ type: 'text', content: `\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n[Gagal membaca isi berkas ini]\n--- AKHIR BERKAS ---` });
+          reader.readAsText(file);
         }
-
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          const content = e.target.result || "";
-          resolve(`\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n\`\`\`\n${content}\n\`\`\`\n--- AKHIR BERKAS ---`);
-        };
-        
-        reader.onerror = function() {
-          resolve(`\n\n--- ISI BERKAS LAMPIRAN: ${file.name} ---\n[Gagal membaca isi berkas ini]\n--- AKHIR BERKAS ---`);
-        };
-        
-        // Membaca file sebagai teks UTF-8
-        reader.readAsText(file);
       });
     });
 
     const results = await Promise.all(readPromises);
-    return results.join('');
+    results.forEach(res => {
+      if (res.type === 'text') {
+        textPayload += res.content;
+      }
+    });
+
+    return { textPayload, imagePayload };
   }
 
   // ---------- PENGIRIMAN PESAN ----------
@@ -579,11 +611,14 @@
     
     let rawText = messageInput.value?.trim();
     let fileContentsText = "";
+    let imageBase64Data = null;
 
-    // Membaca isi berkas-berkas yang dilampirkan menggunakan FileReader asinkronus
+    // Membaca isi berkas-berkas menggunakan penanganan tipe file baru
     if (attachedFiles.length > 0) {
       try {
-        fileContentsText = await readAndFormatFiles();
+        const processed = await readAndFormatFiles();
+        fileContentsText = processed.textPayload;
+        imageBase64Data = processed.imagePayload;
       } catch (fileError) {
         console.error("Gagal memproses berkas lampiran:", fileError);
         await showAlert('Gagal', 'Terjadi kesalahan saat membaca isi berkas lampiran.');
@@ -591,12 +626,15 @@
       }
     }
 
-    // Gabungkan teks input manual dengan payload isi berkas teks
+    // Gabungkan teks input manual dengan berkas teks
     if (fileContentsText) {
       rawText = rawText ? `${rawText}${fileContentsText}` : `Berikut adalah isi dari berkas lampiran saya:${fileContentsText}`;
+    } else if (imageBase64Data) {
+      // Menandai bahwa ada pengiriman gambar di dalam log chat state lokal
+      rawText = rawText ? `[MENGIRIM GAMBAR]\n${rawText}` : `[MENGIRIM GAMBAR]\nTolong jelaskan gambar yang saya lampirkan ini.`;
     }
 
-    if (!rawText && attachedFiles.length === 0) {
+    if (!rawText && !imageBase64Data && attachedFiles.length === 0) {
       await showAlert('Pesan kosong', 'Tolong ketikkan isi pesan Anda.');
       return;
     }
@@ -605,14 +643,14 @@
     attachedFiles = [];
     renderFilePreviews();
 
-    // Simpan pesan gabungan lengkap ke dalam State percakapan
+    // Simpan pesan lengkap ke dalam State percakapan
     addMessageToState('user', rawText);
     messageInput.value = '';
-    messageInput.style.height = '40px'; // Kembalikan tinggi input ke semula
+    messageInput.style.height = '40px'; 
     renderCurrentChat();
 
-    // Jalankan Stream AI
-    await executeAIStream(rawText);
+    // Jalankan Stream AI dengan parameter opsional gambar Base64
+    await executeAIStream(rawText, imageBase64Data);
   }
 
   function createNewChat() {
@@ -644,7 +682,7 @@
     renderCurrentChat();
     chatTitleEl.innerText = conv.title;
     messageInput.value = '';
-    messageInput.style.height = '40px'; // Setel ulang tinggi textarea
+    messageInput.style.height = '40px'; 
   }
 
   async function clearCurrentChat() {
@@ -705,19 +743,16 @@
 
   // ---------- LOGIKA INPUT MULTI-ROW & LAMPIRAN BERKAS ----------
   function setupModernInputEvents() {
-    // 1. Ekspansi Otomatis Textarea ketika Berfokus (Focus) ke 100px (~3 baris)
     messageInput.addEventListener('focus', () => {
       messageInput.style.height = '100px';
     });
 
-    // 2. Mengempiskan kembali jika tidak berfokus (Blur) dan kosong (1 baris)
     messageInput.addEventListener('blur', () => {
       if (!messageInput.value.trim()) {
         messageInput.style.height = '40px';
       }
     });
 
-    // 3. Menyesuaikan tinggi dinamis sewaktu mengetik
     messageInput.addEventListener('input', () => {
       if (messageInput.value.trim() === '') {
         messageInput.style.height = '40px';
@@ -726,29 +761,22 @@
       }
     });
 
-    // 4. Trigger Tombol Unggah Berkas
     attachFileBtn.addEventListener('click', (e) => {
       e.preventDefault();
       hiddenFileInput.click();
     });
 
-    // 5. Tangkap Berkas Terpilih (Ditambah RESET VALUE agar file yang sama bisa terpilih kembali)
     hiddenFileInput.addEventListener('change', function(e) {
       const files = Array.from(e.target.files);
       if (files.length > 0) {
         files.forEach(file => {
-          // Cek duplikasi berdasarkan nama dan ukuran
           const isExist = attachedFiles.some(f => f.name === file.name && f.size === file.size);
           if (!isExist) {
             attachedFiles.push(file);
           }
         });
         renderFilePreviews();
-        
-        // Sangat Penting: Reset value input agar event 'change' terpancing jika file yang sama di-upload ulang
         this.value = '';
-        
-        // Fokuskan kembali ke textarea setelah memilih berkas agar meluas
         messageInput.focus();
       }
     });
@@ -769,15 +797,19 @@
     attachedFiles.forEach((file, index) => {
       const chip = document.createElement('div');
       chip.className = 'file-chip';
+      
+      const isImg = file.type.startsWith('image/');
+      const iconName = isImg ? 'image-outline' : 'document-attach-outline';
+      const colorStyle = isImg ? 'color: #10b981;' : '';
+
       chip.innerHTML = `
-        <ion-icon name="document-attach-outline"></ion-icon>
+        <ion-icon name="${iconName}" style="${colorStyle}"></ion-icon>
         <span style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(file.name)}</span>
         <button type="button" class="remove-file-btn" data-index="${index}">
           <ion-icon name="close-circle"></ion-icon>
         </button>
       `;
 
-      // Hapus lampiran
       chip.querySelector('.remove-file-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -800,7 +832,6 @@
     scrollTopFab = document.getElementById('scroll-top-fab');
     chatTitleEl = document.getElementById('chat-title');
     
-    // Inisialisasi Elemen Attachment Baru
     attachFileBtn = document.getElementById('attach-file-btn');
     hiddenFileInput = document.getElementById('hidden-file-input');
     attachmentPreviewContainer = document.getElementById('attachment-preview-container');
@@ -812,7 +843,6 @@
 
     sendBtn.addEventListener('click', () => sendUserMessage());
     
-    // Penanganan Tombol Keyboard (Shift+Enter untuk baris baru, Enter biasa kirim)
     messageInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -824,7 +854,6 @@
     document.getElementById('clear-current-chat-btn')?.addEventListener('click', () => clearCurrentChat());
     document.getElementById('scroll-top-btn')?.addEventListener('click', () => scrollToTop());
 
-    // Jalankan listener event kustom input baru
     setupModernInputEvents();
     initScrollListener();
 
