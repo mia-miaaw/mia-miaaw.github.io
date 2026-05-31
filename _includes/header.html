@@ -1,13 +1,159 @@
-      <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-menu-button menu="chatHistoryMenu"></ion-menu-button>
-          </ion-buttons>
-          <ion-title id="chat-title" style="font-weight: 600;">Percakapan AI</ion-title>
-          <ion-buttons slot="end">
-            <ion-button id="clear-current-chat-btn" fill="clear">
-              <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+<style>
+  /* Modern Glassmorphism Toolbar Override */
+  .modern-header {
+    --background: transparent !important;
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.3s ease;
+  }
+
+  /* Dark mode support automatically integrated */
+  @media (prefers-color-scheme: dark) {
+    .modern-header {
+      background: rgba(15, 23, 42, 0.75) !important;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    }
+  }
+
+  /* Custom Menu Toggle Button Styling */
+  .modern-menu-btn {
+    --color: #475569 !important;
+    --background-hover: rgba(0, 0, 0, 0.05) !important;
+    --border-radius: 12px;
+    margin-left: 8px;
+    transition: transform 0.2s ease;
+  }
+  .modern-menu-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* Sleek Flex Title Container with Dynamic Pulse Badge */
+  .header-title-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .header-title-main {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .header-title-main {
+      background: linear-gradient(135deg, #f8fafc, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  /* AI Status Pulsing Indicator Badge */
+  .ai-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 3px 8px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #059669;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .ai-status-badge {
+      background: rgba(52, 211, 153, 0.15);
+      border-color: rgba(52, 211, 153, 0.25);
+      color: #34d399;
+    }
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .pulse-dot::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: #10b981;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: badge-pulse 1.8s infinite ease-in-out;
+  }
+
+  @keyframes badge-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2.8);
+      opacity: 0;
+    }
+  }
+
+  /* Premium Clear Trash Action Button */
+  .modern-clear-btn {
+    --color: #64748b !important;
+    --background-hover: rgba(239, 68, 68, 0.08) !important;
+    --color-hover: #ef4444 !important;
+    border-radius: 12px;
+    margin-right: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .modern-clear-btn:hover {
+    --color: #ef4444 !important;
+    transform: rotate(6deg);
+  }
+
+  .modern-clear-btn:active {
+    transform: scale(0.9) rotate(0deg);
+  }
+</style>
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="modern-header">
+    
+    <!-- Bagian Kiri: Pemicu Sidebar Menu -->
+    <ion-buttons slot="start">
+      <ion-menu-button menu="chatHistoryMenu" class="modern-menu-btn"></ion-menu-button>
+    </ion-buttons>
+    
+    <!-- Bagian Tengah: Judul & Status Badge Kreatif -->
+    <ion-title>
+      <div class="header-title-container">
+        <span id="chat-title" class="header-title-main">Percakapan AI</span>
+        <div class="ai-status-badge">
+          <span class="pulse-dot"></span>
+          <span>MIA v3.2</span>
+        </div>
+      </div>
+    </ion-title>
+    
+    <!-- Bagian Kanan: Aksi Bersihkan Obrolan -->
+    <ion-buttons slot="end">
+      <ion-button id="clear-current-chat-btn" fill="clear" class="modern-clear-btn">
+        <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
