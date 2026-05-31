@@ -674,7 +674,7 @@
       showAlert('Tunggu', 'Selesaikan proses streaming sebelum berpindah riwayat.');
       return;
     }
-    const conv = conversations.find(c => c.id === convId);
+    const conv = conversations.find(c => c.id === currentConversationId);
     if (!conv) return;
     currentConversationId = convId;
     saveToLocalStorage();
@@ -728,7 +728,7 @@
     }
   }
 
-  // ---------- LOGIKA PENILAIAN POSISI GULIRAN UNTUK FAB ----------
+  // ---------- LOGIKA DETEKSI POSISI GULIRAN UNTUK TOMBOL SCROLL TO BOTTOM ----------
   async function initScrollListener() {
     const chatContent = document.querySelector('#chat-content');
     if (!chatContent) return;
@@ -742,16 +742,15 @@
       const scrollHeight = scrollEl.scrollHeight;
       const clientHeight = scrollEl.clientHeight;
       
-      // Hitung jarak sisa guliran menuju posisi paling bawah (px)
+      // Jarak sisa guliran menuju posisi paling bawah (px)
       const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
-      // LOGIKA BARU:
-      // - Munculkan tombol FAB jika pengguna scroll menjauh dari bawah (misal jarak > 180px)
-      // - DAN batasi agar tidak muncul jika pengguna sudah berada sangat dekat dengan batas atas (misal scrollTop < 150px)
-      if (distanceFromBottom > 180 && scrollTop > 150) {
+      // LOGIKA KOREKSI (SCROLL TO BOTTOM FAB):
+      // - Munculkan tombol jika posisi pengguna melayang di atas (jarak ke dasar chat > 250px)
+      // - Otomatis tersembunyi jika pengguna sudah sangat dekat atau sampai di pesan terbaru (jarak ke dasar <= 250px)
+      if (distanceFromBottom > 250) {
         scrollTopFab.style.display = 'flex';
       } else {
-        // Otomatis tersembunyi ketika user sudah scroll kembali ke dasar, atau saat berada di paling atas
         scrollTopFab.style.display = 'none';
       }
     });
@@ -868,7 +867,18 @@
 
     document.getElementById('new-chat-btn')?.addEventListener('click', () => createNewChat());
     document.getElementById('clear-current-chat-btn')?.addEventListener('click', () => clearCurrentChat());
-    document.getElementById('scroll-top-btn')?.addEventListener('click', () => scrollToTop());
+    
+    // KOREKSI TOMBOL KLIK: Sekarang tombol ini otomatis mengarahkan ke bawah (scrollToBottom)
+    const scrollBtn = document.getElementById('scroll-top-btn');
+    if (scrollBtn) {
+      scrollBtn.addEventListener('click', () => scrollToBottom());
+      
+      // Mengubah ikonnya secara dinamis menjadi arah bawah agar selaras dengan fungsinya
+      const icon = scrollBtn.querySelector('ion-icon');
+      if (icon) {
+        icon.setAttribute('name', 'arrow-down-outline');
+      }
+    }
 
     setupModernInputEvents();
     initScrollListener();
