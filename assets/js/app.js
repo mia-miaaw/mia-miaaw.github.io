@@ -745,9 +745,7 @@
       // Jarak sisa guliran menuju posisi paling bawah (px)
       const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
-      // LOGIKA KOREKSI (SCROLL TO BOTTOM FAB):
-      // - Munculkan tombol jika posisi pengguna melayang di atas (jarak ke dasar chat > 250px)
-      // - Otomatis tersembunyi jika pengguna sudah sangat dekat atau sampai di pesan terbaru (jarak ke dasar <= 250px)
+      // KOREKSI TOMBOL MELAYANG (FAB) SCROLL TO BOTTOM:
       if (distanceFromBottom > 250) {
         scrollTopFab.style.display = 'flex';
       } else {
@@ -756,7 +754,7 @@
     });
   }
 
-  // ---------- LOGIKA INPUT MULTI-ROW & LAMPIRAN BERKAS ----------
+  // ---------- LOGIKA INPUT MULTI-ROW, LAMPIRAN BERKAS & KLIK KARTU PINTAS ----------
   function setupModernInputEvents() {
     messageInput.addEventListener('focus', () => {
       messageInput.style.height = '100px';
@@ -795,6 +793,25 @@
         messageInput.focus();
       }
     });
+
+    // ====== LOGIKA BARU: INTERAKSI KLIK KARTU SARAN WIDGET ======
+    document.addEventListener('click', function(e) {
+      const card = e.target.closest('.suggestion-card');
+      if (card) {
+        const promptText = card.getAttribute('data-prompt');
+        if (promptText && messageInput) {
+          // Masukkan teks saran ke dalam kotak input
+          messageInput.value = promptText;
+          
+          // Lebarkan tinggi kotak input secara dinamis
+          messageInput.style.height = '100px';
+          
+          // Fokuskan kursor ke kotak teks agar pengguna siap mengetik atau melampirkan file
+          messageInput.focus();
+        }
+      }
+    });
+    // ====== AKHIR LOGIKA KARTU SARAN ======
   }
 
   // Merender cip visual untuk berkas yang siap dikirim
@@ -868,12 +885,11 @@
     document.getElementById('new-chat-btn')?.addEventListener('click', () => createNewChat());
     document.getElementById('clear-current-chat-btn')?.addEventListener('click', () => clearCurrentChat());
     
-    // KOREKSI TOMBOL KLIK: Sekarang tombol ini otomatis mengarahkan ke bawah (scrollToBottom)
+    // KOREKSI TOMBOL KLIK: Mengarahkan ke bawah (scrollToBottom)
     const scrollBtn = document.getElementById('scroll-top-btn');
     if (scrollBtn) {
       scrollBtn.addEventListener('click', () => scrollToBottom());
       
-      // Mengubah ikonnya secara dinamis menjadi arah bawah agar selaras dengan fungsinya
       const icon = scrollBtn.querySelector('ion-icon');
       if (icon) {
         icon.setAttribute('name', 'arrow-down-outline');
