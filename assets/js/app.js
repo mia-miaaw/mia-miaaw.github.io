@@ -728,14 +728,30 @@
     }
   }
 
-  function initScrollListener() {
+  // ---------- LOGIKA PENILAIAN POSISI GULIRAN UNTUK FAB ----------
+  async function initScrollListener() {
     const chatContent = document.querySelector('#chat-content');
     if (!chatContent) return;
+
+    // Ambil elemen DOM guliran asli di dalam shadow-root Ionic
+    const scrollEl = await chatContent.getScrollElement();
+    if (!scrollEl) return;
+
     chatContent.addEventListener('ionScroll', (ev) => {
       const scrollTop = ev.detail.scrollTop;
-      if (scrollTop > 300) {
+      const scrollHeight = scrollEl.scrollHeight;
+      const clientHeight = scrollEl.clientHeight;
+      
+      // Hitung jarak sisa guliran menuju posisi paling bawah (px)
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+
+      // LOGIKA BARU:
+      // - Munculkan tombol FAB jika pengguna scroll menjauh dari bawah (misal jarak > 180px)
+      // - DAN batasi agar tidak muncul jika pengguna sudah berada sangat dekat dengan batas atas (misal scrollTop < 150px)
+      if (distanceFromBottom > 180 && scrollTop > 150) {
         scrollTopFab.style.display = 'flex';
       } else {
+        // Otomatis tersembunyi ketika user sudah scroll kembali ke dasar, atau saat berada di paling atas
         scrollTopFab.style.display = 'none';
       }
     });
