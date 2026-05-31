@@ -256,12 +256,13 @@
       height: 32px;
     }
 
-    .empty-chat {
-      text-align: center;
-      color: #9ca3af;
-      margin-top: 80px;
-      font-size: 0.95rem;
-    }
+ .empty-chat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
     ion-footer {
       background: white;
