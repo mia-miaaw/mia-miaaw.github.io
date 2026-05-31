@@ -1,8 +1,8 @@
 # Site settings
 title: AI Chat by MIA
 description: Aplikasi chat AI dengan streaming real-time, lampiran file, dan riwayat percakapan.
-baseurl: ""  # jika deploy di subpath, misal "/my-chat-app"
-url: "https://mia-miaaw.github.io"      # domain utama, kosong untuk lokal
+baseurl: ""
+url: "https://mia-miaaw.github.io"
 
 # Build settings
 markdown: kramdown
