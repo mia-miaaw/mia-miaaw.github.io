@@ -1,8 +1,262 @@
+  <style>
+    /* Styling Khusus untuk Welcome Screen Premium */
+    .premium-welcome-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Glowing Avatar Circle */
+    .welcome-avatar-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .welcome-avatar-glow {
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      background: linear-gradient(135deg, #2563eb, #10b981);
+      border-radius: 50%;
+      filter: blur(12px);
+      opacity: 0.45;
+      animation: avatar-pulse 3s infinite alternate;
+    }
+
+    .welcome-avatar-icon {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #38bdf8;
+      font-size: 38px;
+    }
+
+    @keyframes avatar-pulse {
+      0% { transform: scale(0.96); opacity: 0.35; }
+      100% { transform: scale(1.05); opacity: 0.6; }
+    }
+
+    /* Typography */
+    .welcome-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0 0 10px 0;
+      background: linear-gradient(135deg, #0f172a, #2563eb, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .welcome-title {
+        background: linear-gradient(135deg, #f8fafc, #60a5fa, #34d399);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+
+    .welcome-subtitle {
+      font-size: 1rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin: 0 0 30px 0;
+      max-width: 540px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .welcome-subtitle {
+        color: #94a3b8;
+      }
+    }
+
+    /* Capabilities Badges */
+    .capability-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .cap-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #475569;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .cap-badge {
+        background: rgba(51, 65, 85, 0.4);
+        border-color: rgba(71, 85, 105, 0.3);
+        color: #cbd5e1;
+      }
+    }
+
+    .cap-badge ion-icon {
+      font-size: 1.05rem;
+    }
+
+    /* Suggestions Grid */
+    .suggestions-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 480px) {
+      .suggestions-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .suggestion-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .suggestion-card {
+        background: #1e293b;
+        border-color: #334155;
+      }
+    }
+
+    .suggestion-card:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .suggestion-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #0f172a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .suggestion-card-header {
+        color: #f1f5f9;
+      }
+    }
+
+    .suggestion-card-desc {
+      font-size: 0.78rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .suggestion-card-desc {
+        color: #94a3b8;
+      }
+    }
+  </style>
+
       <ion-content id="chat-content" scroll-events="true">
         <div class="chat-container" id="messages-container">
-          <div class="empty-chat" style="display: none;" id="empty-chat-placeholder">
-            <ion-icon name="sparkles-outline" style="font-size: 54px; color: #cbd5e1; margin-bottom: 12px;"></ion-icon>
-            <p class="text-slate-500">Mulai sesi baru bersama AI MIA.<br>Ketik pertanyaan teknis atau umum di bawah!</p>
-          </div>
+            <div class="empty-chat" style="display: none;" id="empty-chat-placeholder">
+              <div class="premium-welcome-container">
+                
+                <!-- Glowing Pulsing Avatar -->
+                <div class="welcome-avatar-wrapper">
+                  <div class="welcome-avatar-glow"></div>
+                  <div class="welcome-avatar-icon">
+                    <ion-icon name="sparkles"></ion-icon>
+                  </div>
+                </div>
+
+                <!-- Judul Utama -->
+                <h1 class="welcome-title">Halo, Aku MIA</h1>
+                <p class="welcome-subtitle">
+                  Asisten kecerdasan buatan multimodal yang siap membantumu menyusun kode pemrograman, menganalisis berkas dokumen, serta membaca gambar secara instan.
+                </p>
+
+                <!-- Kapabilitas Pills -->
+                <div class="capability-badges-row">
+                  <div class="cap-badge">
+                    <ion-icon name="eye" style="color: #10b981;"></ion-icon>
+                    <span>Llama 3.2 Vision</span>
+                  </div>
+                  <div class="cap-badge">
+                    <ion-icon name="document-text" style="color: #3b82f6;"></ion-icon>
+                    <span>File Reader</span>
+                  </div>
+                  <div class="cap-badge">
+                    <ion-icon name="code-working" style="color: #f59e0b;"></ion-icon>
+                    <span>Qwen 2.5 Coder</span>
+                  </div>
+                </div>
+
+                <!-- Suggestions Grid -->
+                <div class="suggestions-grid">
+                  
+                  <div class="suggestion-card" data-prompt="Tolong ubah sketsa gambar yang saya lampirkan ini menjadi kode HTML, CSS, dan Tailwind CSS yang rapi dan responsif.">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="image-outline" style="color: #10b981; font-size: 1.1rem;"></ion-icon>
+                      <span>Ubah Gambar ke HTML</span>
+                    </div>
+                    <div class="suggestion-card-desc">Konversi tangkapan layar atau sketsa corat-coret Anda menjadi kode web siap pakai.</div>
+                  </div>
+
+                  <div class="suggestion-card" data-prompt="Bagaimana cara membuat Cloudflare Worker asset server dengan mekanisme cache dan Content Security Policy (CSP)?">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="cloud-outline" style="color: #3b82f6; font-size: 1.1rem;"></ion-icon>
+                      <span>Cloudflare Workers</span>
+                    </div>
+                    <div class="suggestion-card-desc">Tanyakan seputar deploy, penanganan cache default, KV namespace, hingga CORS di serverless.</div>
+                  </div>
+
+                  <div class="suggestion-card" data-prompt="Tolong analisis kode TypeScript ini, cari celah keamanan, potensi error, dan berikan refactor optimal:">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="bug-outline" style="color: #f59e0b; font-size: 1.1rem;"></ion-icon>
+                      <span>Refactor & Cari Bug</span>
+                    </div>
+                    <div class="suggestion-card-desc">Tempel kode Anda untuk diperiksa celah keamanannya secara mendalam.</div>
+                  </div>
+
+                  <div class="suggestion-card" data-prompt="Berikan saya ide proyek full-stack kreatif yang memanfaatkan ekosistem gratis Cloudflare (Workers, KV, Pages, D1).">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="bulb-outline" style="color: #ec4899; font-size: 1.1rem;"></ion-icon>
+                      <span>Ide Proyek Kreatif</span>
+                    </div>
+                    <div class="suggestion-card-desc">Kembangkan aplikasi keren berikutnya yang berjalan 100% di serverless gratis.</div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
         </div>
       </ion-content>
