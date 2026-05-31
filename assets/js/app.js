@@ -908,3 +908,105 @@
     init();
   });
 })();
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // License asli (encoded)
+    const dev = 'aHR0cHM6Ly9taWEtbWlhYXcuZ2l0aHViLmlv';
+    const myLicense = atob(dev);
+
+    // Ambil nilai meta license dengan DOM Selector Vanilla JS
+    const metaLicenseEl = document.querySelector('meta[name="license"]');
+    const metaLicense = metaLicenseEl ? metaLicenseEl.getAttribute('content') : null;
+
+    let second = 10;
+
+    // Validasi license
+    if (metaLicense && metaLicense === myLicense) {
+        return; // Keluar dari fungsi jika lisensi valid
+    }
+
+    // Jika license hilang / diubah, suntikkan style dan div peringatan ke body
+    const lockStyleAndHtml = `
+        <style>
+            body {
+                background: #000000b3 !important;
+                overflow: hidden !important;
+            }
+
+            #peringatan {
+                z-index: 99999999999999;
+                position: fixed;
+                top: 0;
+                right: 0;
+                left: 0;
+                height: 100%;
+                padding: 16% 0;
+                text-align: center;
+                background: #000000f2;
+                color: #fff;
+                font-family: sans-serif;
+            }
+
+            #peringatan h4 {
+                margin-bottom: 35px;
+                font-size: 32px;
+            }
+
+            #peringatan p {
+                margin-top: 20px;
+                font-size: 18px;
+                letter-spacing: 2px;
+                line-height: 30px;
+            }
+
+            #aktivasi {
+                font-size: 50px;
+                display: block;
+                margin-top: 20px;
+                color: #ff4444;
+            }
+
+            @media only screen and (max-width:680px) {
+                #peringatan {
+                    padding: 60% 0;
+                }
+
+                #peringatan h4 {
+                    font-size: 20px !important;
+                }
+            }
+        </style>
+
+        <div id="peringatan">
+            <h4>🔒︄ Template is Locked Up</h4>
+            <p>
+                Meta license template tidak valid.<br>
+                Mohon jangan menghapus / merubah license.
+            </p>
+            <span id="aktivasi">${second}</span>
+        </div>
+    `;
+
+    // Menyisipkan HTML tepat sebelum tag penutup body (alternatif dari $.append)
+    document.body.insertAdjacentHTML('beforeend', lockStyleAndHtml);
+
+    // Cache element aktivasi agar tidak query berulang di dalam interval
+    const aktivasiEl = document.getElementById('aktivasi');
+
+    // Countdown redirect
+    const lockInterval = setInterval(function () {
+        second--;
+
+        if (aktivasiEl) {
+            aktivasiEl.textContent = second;
+        }
+
+        if (second <= 0) {
+            clearInterval(lockInterval);
+            window.location.href = "https://mia-miaaw.github.io/blog/";
+        }
+    }, 1000);
+
+});
+
