@@ -9,13 +9,23 @@
     transition: all 0.3s ease;
   }
 
-  /* Dark mode support automatically integrated */
-  @media (prefers-color-scheme: dark) {
-    .modern-header {
-      background: rgba(15, 23, 42, 0.75) !important;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-    }
+/* Mode Default / Terang */
+.modern-header ion-icon {
+  color: #333333; /* Warna icon saat mode terang */
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .modern-header {
+    background: rgba(15, 23, 42, 0.75) !important;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
   }
+
+  /* Mengubah warna Ionicons menjadi putih saat dark mode */
+  .modern-header ion-icon {
+    color: #ffffff; 
+  }
+}
 
   /* Custom Menu Toggle Button Styling */
   .modern-menu-btn {
