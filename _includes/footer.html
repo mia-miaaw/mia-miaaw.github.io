@@ -1,14 +1,15 @@
+        <!-- FOOTER: Input & Attachment Modern -->
         <ion-footer>
-          <ion-toolbar>
+          <ion-toolbar style="--background: white;">
             <div class="footer-wrapper">
               
               <!-- Container Pratinjau Lampiran File -->
-              <div id="attachment-preview-container" class="attachment-preview-container"></div>
+              <div id="attachment-preview-container" class="attachment-preview-container" style="display: none;"></div>
               
               <!-- Kotak Input Utama Modern -->
               <div class="input-container-modern">
                 <!-- Tombol Add File -->
-                <button id="attach-file-btn" class="attach-btn" type="button">
+                <button id="attach-file-btn" class="attach-btn" type="button" title="Lampirkan File">
                   <ion-icon name="add-circle-outline"></ion-icon>
                 </button>
                 
@@ -25,13 +26,13 @@
                 ></textarea>
 
                 <!-- Tombol Mikrofon Pintas (Speech-to-Text) -->
-                <button id="mic-record-btn" class="mic-btn" type="button">
-                  <ion-icon slot="icon-only" name="mic-circle"></ion-icon>
+                <button id="mic-record-btn" class="mic-btn" type="button" title="Gunakan Suara">
+                  <ion-icon name="mic-circle"></ion-icon>
                 </button>
 
                 <!-- Tombol Kirim -->
-                <button id="send-message-btn" class="send-btn-modern" type="button">
-                  <ion-icon slot="icon-only" name="arrow-up-circle"></ion-icon>
+                <button id="send-message-btn" class="send-btn-modern" type="button" title="Kirim">
+                  <ion-icon name="arrow-up-circle"></ion-icon>
                 </button>
               </div>
 
