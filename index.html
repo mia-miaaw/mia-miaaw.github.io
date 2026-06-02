@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AI Chat</title>
+  <title>MIA - AI Chat Assistant</title>
+  
+  <meta name="license" content="https://mia-miaaw.github.io">
 
   <!-- Ionic Core 8 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@8/css/ionic.bundle.css" />
@@ -15,24 +17,27 @@
   <!-- Markdown Parser & XSS Sanitizer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-  
 </head>
 <body>
   <ion-app>
     <ion-split-pane content-id="main-content" when="md">
 
-      <!-- SIDEBAR: Riwayat Chat -->
+      <!-- SIDEBAR: Profil User & Riwayat Chat -->
       <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title style="font-weight: 600;">Riwayat Chat</ion-title>
+        <!-- Profile info section -->
+        <div id="sidebar-user-container"></div>
+
+        <ion-header class="ion-no-border">
+          <ion-toolbar class="modern-header" style="padding: 4px 8px;">
+            <ion-title style="font-size: 0.95rem; font-weight: 700; color: #475569;">Riwayat Chat</ion-title>
             <ion-buttons slot="end">
-              <ion-button id="new-chat-btn">
-                <ion-icon slot="icon-only" name="chatbubble-ellipses-outline" color="primary"></ion-icon>
+              <ion-button id="new-chat-btn" fill="clear" color="primary" title="Obrolan Baru">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
               </ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
+        
         <ion-content>
           <ion-list id="conversation-list" lines="full">
             <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
@@ -40,43 +45,162 @@
             </ion-item>
           </ion-list>
         </ion-content>
+        <ion-footer>
+          <ion-toolbar>
+            <ion-buttons slot="end">
+              
+              <!-- Tampilan Saldo Token Dinamis -->
+              <div id="token-balance-display" class="token-balance-container" style="margin-right: 8px;"></div>
+              
+              <ion-button id="clear-current-chat-btn" fill="clear" class="modern-clear-btn" title="Bersihkan Percakapan">
+                <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons></ion-toolbar>
+        </ion-footer>
       </ion-menu>
 
       <!-- CONTENT UTAMA CHAT -->
       <div class="ion-page" id="main-content">
-        <ion-header>
-          <ion-toolbar>
+        <!-- HEADER UTAMA -->
+        <ion-header class="ion-no-border">
+          <ion-toolbar class="modern-header">
             <ion-buttons slot="start">
-              <ion-menu-button menu="chatHistoryMenu"></ion-menu-button>
+              <ion-menu-button menu="chatHistoryMenu" class="modern-menu-btn"></ion-menu-button>
             </ion-buttons>
-            <ion-title id="chat-title" style="font-weight: 600;">Percakapan AI</ion-title>
+            
+            <ion-title>
+              <div class="header-title-container">
+                <span id="chat-title" class="header-title-main">Percakapan AI</span>
+                <div class="ai-status-badge">
+                  <span class="pulse-dot"></span>
+                  <span>MIA v3.2</span>
+                </div>
+              </div>
+            </ion-title>
             <ion-buttons slot="end">
-              <ion-button id="clear-current-chat-btn" fill="clear">
-                <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
+              <!-- Tombol pintasan menyalakan/mematikan Auto Read Aloud (Auto TTS) -->
+              <ion-button id="auto-speak-toggle" class="voice-control-btn" fill="clear">
+                <ion-icon slot="icon-only" name="volume-mute-outline"></ion-icon>
               </ion-button>
-            </ion-buttons>
+              </ion-buttons>
           </ion-toolbar>
         </ion-header>
 
         <ion-content id="chat-content" scroll-events="true">
           <div class="chat-container" id="messages-container">
-            <!-- Pesan akan dirender disini -->
-            <div class="empty-chat" style="display: none;" id="empty-chat-placeholder">
-              <ion-icon name="sparkles-outline" style="font-size: 54px; color: #cbd5e1; margin-bottom: 12px;"></ion-icon>
-              <p class="text-slate-500">Mulai sesi baru bersama AI MIA.<br>Ketik pertanyaan teknis atau umum di bawah!</p>
+            
+            <!-- ====== WELCOME SCREEN ====== -->
+            <div class="empty-chat" style="display: flex; flex-direction: column; width: 100%;" id="empty-chat-placeholder">
+              <div class="premium-welcome-container">
+                
+                <div class="welcome-avatar-wrapper">
+                  <div class="welcome-avatar-glow"></div>
+                  <div class="welcome-avatar-icon">
+                    <ion-icon name="sparkles"></ion-icon>
+                  </div>
+                </div>
+
+                <h1 class="welcome-title">Halo, Aku MIA</h1>
+                <p class="welcome-subtitle">
+                  Asisten kecerdasan buatan multimodal yang siap membantumu menyusun kode pemrograman, menganalisis berkas dokumen, serta membaca gambar secara instan.
+                </p>
+
+                <div class="capability-badges-row">
+                  <div class="cap-badge">
+                    <ion-icon name="eye" style="color: #10b981;"></ion-icon>
+                    <span>Llama 3.2 Vision</span>
+                  </div>
+                  <div class="cap-badge">
+                    <ion-icon name="mic" style="color: #3b82f6;"></ion-icon>
+                    <span>Speech To Speech</span>
+                  </div>
+                  <div class="cap-badge">
+                    <ion-icon name="code-working" style="color: #f59e0b;"></ion-icon>
+                    <span>Qwen 2.5 Coder</span>
+                  </div>
+                </div>
+
+                <div class="suggestions-grid">
+                  
+                  <div class="suggestion-card" data-prompt="Tolong ubah sketsa gambar yang saya lampirkan ini menjadi kode HTML, CSS, dan Tailwind CSS yang rapi dan responsif.">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="image-outline" style="color: #10b981; font-size: 1.1rem;"></ion-icon>
+                      <span>Ubah Gambar ke HTML</span>
+                    </div>
+                    <div class="suggestion-card-desc">Konversi tangkapan layar atau sketsa corat-coret Anda menjadi kode web siap pakai.</div>
+                  </div>
+
+                  <div class="suggestion-card" data-prompt="Bagaimana cara membuat Cloudflare Worker asset server dengan mekanisme cache dan Content Security Policy (CSP)?">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="cloud-outline" style="color: #3b82f6; font-size: 1.1rem;"></ion-icon>
+                      <span>Cloudflare Workers</span>
+                    </div>
+                    <div class="suggestion-card-desc">Tanyakan seputar deploy, penanganan cache default, KV namespace, hingga CORS di serverless.</div>
+                  </div>
+
+                  <div class="suggestion-card" data-prompt="Tolong analisis kode TypeScript ini, cari celah keamanan, potensi error, dan berikan refactor optimal:">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="bug-outline" style="color: #f59e0b; font-size: 1.1rem;"></ion-icon>
+                      <span>Refactor & Cari Bug</span>
+                    </div>
+                    <div class="suggestion-card-desc">Tempel kode Anda untuk diperiksa celah keamanannya secara mendalam.</div>
+                  </div>
+
+                  <div class="suggestion-card" data-prompt="Tolong ceritakan dongeng singkat tentang rubah yang bijaksana menggunakan bahasa Indonesia yang ramah.">
+                    <div class="suggestion-card-header">
+                      <ion-icon name="chatbubbles-outline" style="color: #ec4899; font-size: 1.1rem;"></ion-icon>
+                      <span>Cerita Suara</span>
+                    </div>
+                    <div class="suggestion-card-desc">Cobalah mendengarkan asisten MIA membacakan cerita secara langsung.</div>
+                  </div>
+
+                </div>
+
+              </div>
             </div>
+            <!-- ====== AKHIR WELCOME SCREEN ====== -->
+
           </div>
         </ion-content>
 
+        <!-- FOOTER: Input & Attachment Modern -->
         <ion-footer>
           <ion-toolbar>
-            <div class="input-container">
-              <ion-input id="message-input" placeholder="Tanyakan sesuatu..." value="" autocomplete="off"></ion-input>
-            <ion-buttons>
-              <ion-button id="send-message-btn" class="send-btn" fill="clear" color="primary">
-                <ion-icon name="send" slot="icon-only"></ion-icon>
-              </ion-button>
-            </ion-buttons>
+            <div class="footer-wrapper">
+              
+              <!-- Container Pratinjau Lampiran File -->
+              <div id="attachment-preview-container" class="attachment-preview-container" style="display: none;"></div>
+              
+              <!-- Kotak Input Utama Modern -->
+              <div class="input-container-modern">
+                <!-- Tombol Add File -->
+                <button id="attach-file-btn" class="attach-btn" type="button" title="Lampirkan File">
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                </button>
+                
+                <!-- Input File Tersembunyi -->
+                <input type="file" id="hidden-file-input" class="hidden-input" multiple>
+
+                <!-- Textarea Pintas Dinamis -->
+                <textarea 
+                  id="message-input" 
+                  class="modern-textarea" 
+                  placeholder="Tanyakan sesuatu..." 
+                  rows="1"
+                  autocomplete="off"
+                ></textarea>
+
+                <!-- Tombol Mikrofon Pintas (Speech-to-Text) -->
+                <button id="mic-record-btn" class="mic-btn" type="button" title="Gunakan Suara">
+                  <ion-icon name="mic-circle"></ion-icon>
+                </button>
+
+                <!-- Tombol Kirim -->
+                <button id="send-message-btn" class="send-btn-modern" type="button" title="Kirim">
+                  <ion-icon name="arrow-up-circle"></ion-icon>
+                </button>
+              </div>
+
             </div>
           </ion-toolbar>
         </ion-footer>
@@ -84,7 +208,7 @@
         <!-- Scroll to top FAB -->
         <ion-fab id="scroll-top-fab" class="scroll-top-fab" vertical="bottom" horizontal="end" slot="fixed" style="display: none;">
           <ion-fab-button size="small" color="light" id="scroll-top-btn">
-            <ion-icon name="arrow-up-outline"></ion-icon>
+            <ion-icon name="arrow-down-outline"></ion-icon>
           </ion-fab-button>
         </ion-fab>
       </div>
@@ -94,9 +218,8 @@
   <!-- IONIC CORE & IONICONS CDN -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.esm.js"></script>
   <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.js"></script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
-  <script src="./assets/js/app.js"></script>
-  
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+  <script src="https://bucket.mvstream.workers.dev/b7f3bc054fe14dde1ee2ca309c2d3106c1f149fe/ai/assets/js/mia-ai.js"></script>
 </body>
 </html>
