@@ -1,20 +1,24 @@
     <!-- SIDEBAR RIWAYAT -->
-    <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title style="font-weight: 600;">Riwayat Chat</ion-title>
-          <ion-buttons slot="end">
-            <ion-button id="new-chat-btn">
-              <ion-icon slot="icon-only" name="chatbubble-ellipses-outline" color="primary"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <ion-list id="conversation-list" lines="full">
-          <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
-            <ion-label class="ion-text-center" color="medium">Memuat riwayat...</ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-content>
-    </ion-menu>
+      <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
+        <!-- Profile info section -->
+        <div id="sidebar-user-container"></div>
+
+        <ion-header class="ion-no-border">
+          <ion-toolbar class="modern-header" style="padding: 4px 8px;">
+            <ion-title style="font-size: 0.95rem; font-weight: 700; color: #475569;">Riwayat Chat</ion-title>
+            <ion-buttons slot="end">
+              <ion-button id="new-chat-btn" fill="clear" color="primary" title="Obrolan Baru">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        
+        <ion-content>
+          <ion-list id="conversation-list" lines="full">
+            <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
+              <ion-label class="ion-text-center" color="medium">Memuat riwayat...</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-menu>
