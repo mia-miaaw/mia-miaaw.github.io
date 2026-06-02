@@ -31,6 +31,12 @@ body, ion-app, ion-item, ion-label, ion-title, ion-button {
   box-sizing: border-box;
 }
 
+@media (prefers-color-scheme: dark) {
+  .chat-container {
+    background: #1e293b;
+  }
+}
+
 /* Message Item - Perbaikan Struktur Flexbox */
 .message {
   display: flex;
