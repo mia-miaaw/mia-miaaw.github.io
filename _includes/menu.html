@@ -1,4 +1,6 @@
-    <!-- SIDEBAR RIWAYAT -->
+
+
+      <!-- SIDEBAR: Profil User & Riwayat Chat -->
       <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
         <!-- Profile info section -->
         <div id="sidebar-user-container"></div>
@@ -21,4 +23,16 @@
             </ion-item>
           </ion-list>
         </ion-content>
+        <ion-footer>
+          <ion-toolbar>
+            <ion-buttons slot="end">
+              
+              <!-- Tampilan Saldo Token Dinamis -->
+              <div id="token-balance-display" class="token-balance-container" style="margin-right: 8px;"></div>
+              
+              <ion-button id="clear-current-chat-btn" fill="clear" class="modern-clear-btn" title="Bersihkan Percakapan">
+                <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons></ion-toolbar>
+        </ion-footer>
       </ion-menu>
