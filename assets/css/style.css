@@ -1,262 +1,270 @@
-    /* Desain Sistem Global & Variabel Warna */
-    :root {
-      --chat-user-bg: #f3f4f6; /* Abu-abu netral tipis untuk User */
-      --chat-ai-bg: transparent; /* Flat tanpa background untuk AI, mirip Gemini */
-      --chat-user-color: #1f2937;
-      --chat-ai-color: #1f2937;
-      --sidebar-width: 290px;
-    }
+/* Desain Sistem Global & Variabel Warna */
+:root {
+  --chat-user-bg: #f3f4f6; 
+  --chat-ai-bg: transparent; 
+  --chat-user-color: #1f2937;
+  --chat-ai-color: #1f2937;
+  --sidebar-width: 290px;
+}
 
-    body, ion-app, ion-item, ion-label, ion-title, ion-button {
-      font-family: 'Inter', sans-serif;
-    }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chat-user-bg: #1e293b;
+    --chat-user-color: #f1f5f9;
+    --chat-ai-color: #cbd5e1;
+  }
+}
 
-    /* Container utama obrolan bergaya datar */
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      padding: 24px 16px 40px 16px;
-      gap: 28px; /* Jarak renggang antar percakapan bergaya Copilot/Gemini */
-      max-width: 850px;
-      margin: 0 auto;
-      width: 100%;
-      box-sizing: border-box;
-    }
+body, ion-app, ion-item, ion-label, ion-title, ion-button {
+  font-family: 'Inter', sans-serif;
+}
 
-    /* Message Item - Perbaikan Struktur Flexbox */
-    .message {
-      display: flex;
-      width: 100%;
-      gap: 12px;
-      box-sizing: border-box;
-      animation: fadeIn 0.25s ease-out;
-    }
+/* Container utama obrolan bergaya datar */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px 40px 16px;
+  gap: 28px; 
+  max-width: 850px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-    /* Alinyemen Khusus Berdasarkan Pengirim */
-    .message.user {
-      justify-content: flex-end; /* Dorong semua konten ke kanan */
-    }
+/* Message Item - Perbaikan Struktur Flexbox */
+.message {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  box-sizing: border-box;
+  animation: fadeIn 0.25s ease-out;
+}
 
-    .message.ai {
-      justify-content: flex-start; /* Dorong semua konten ke kiri */
-    }
+/* Alinyemen Khusus Berdasarkan Pengirim */
+.message.user {
+  justify-content: flex-end; 
+}
 
-    /* Avatar Bulat */
-    .message-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 15%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.75rem;
-      flex-shrink: 0;
-      user-select: none;
-    }
+.message.ai {
+  justify-content: flex-start; 
+}
 
-    /* Aturan Urutan Flex (Order) agar Struktur HTML Tetap Konsisten */
-    .message.user .message-avatar {
-      background: #4f46e5;
-      color: #ffffff;
-      order: 2; /* Avatar ditaruh paling kanan */
-    }
+/* Avatar Bulat */
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  user-select: none;
+}
 
-    .message.ai .message-avatar {
-      background: #10b981;
-      color: #ffffff;
-      order: 1; /* Avatar ditaruh paling kiri */
-    }
+/* Aturan Urutan Flex (Order) agar Struktur HTML Tetap Konsisten */
+.message.user .message-avatar {
+  background: #4f46e5;
+  color: #ffffff;
+  order: 2; 
+}
 
-    /* Wadah Utama Konten Pesan */
-    .message-body-container {
-      max-width: calc(100% - 44px); /* Sisakan ruang untuk avatar agar tidak overlap */
-      display: flex;
-      flex-direction: column;
-    }
+.message.ai .message-avatar {
+  background: #10b981;
+  color: #ffffff;
+  order: 1; 
+}
 
-    .message.user .message-body-container {
-      align-items: flex-end; /* Teks user merapat ke kanan */
-      order: 1; /* Konten ditaruh di sebelah kiri avatar */
-    }
+/* Wadah Utama Konten Pesan */
+.message-body-container {
+  max-width: calc(100% - 44px); 
+  display: flex;
+  flex-direction: column;
+}
 
-    .message.ai .message-body-container {
-      align-items: flex-start; /* Teks AI merapat ke kiri */
-      order: 2; /* Konten ditaruh di sebelah kanan avatar */
-      width: 100%;
-    }
+.message.user .message-body-container {
+  align-items: flex-end; 
+  order: 1; 
+}
 
-    /* Gelembung Pesan Flat */
-    .message-body {
-      font-size: 0.95rem;
-      line-height: 1.55;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      box-sizing: border-box;
-    }
+.message.ai .message-body-container {
+  align-items: flex-start; 
+  order: 2; 
+  width: 100%;
+}
 
-    /* Gelembung Spesifik User */
-    .message.user .message-body {
-      background: var(--chat-user-bg);
-      color: var(--chat-user-color);
-      padding: 10px 16px;
-      border-radius: 18px;
-    }
+/* Gelembung Pesan Flat */
+.message-body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+}
 
-    /* Gelembung Spesifik AI (Gemini Style - Borderless / No Background) */
-    .message.ai .message-body {
-      background: var(--chat-ai-bg);
-      color: var(--chat-ai-color);
-      padding: 4px 0;
-      width: 100%;
-    }
+/* Gelembung Spesifik User */
+.message.user .message-body {
+  background: var(--chat-user-bg);
+  color: var(--chat-user-color);
+  padding: 10px 16px;
+  border-radius: 18px;
+}
 
-    /* Styling Konten Markdown */
-    .markdown-content p {
-      margin: 0 0 12px 0;
-    }
-    .markdown-content p:last-child {
-      margin-bottom: 0;
-    }
-    .markdown-content ul, .markdown-content ol {
-      margin: 0 0 12px 20px;
-      padding: 0;
-    }
-    .markdown-content li {
-      margin-bottom: 4px;
-    }
-    .markdown-content h1, .markdown-content h2, .markdown-content h3, 
-    .markdown-content h4, .markdown-content h5, .markdown-content h6 {
-      color: #111827;
-      font-weight: 600;
-      margin: 20px 0 10px 0;
-    }
-    .markdown-content h1 { font-size: 1.35rem; }
-    .markdown-content h2 { font-size: 1.2rem; }
-    .markdown-content h3 { font-size: 1.05rem; }
+/* Gelembung AI */
+.message.ai .message-body {
+  background: var(--chat-ai-bg);
+  color: var(--chat-ai-color);
+  padding: 4px 0;
+  width: 100%;
+}
 
-    /* Blok Kode Modern & Tombol Salin */
-    .code-block-wrapper {
-      position: relative;
-      background: #1e1e2e;
-      border-radius: 8px;
-      margin: 14px 0;
-      border: 1px solid #313244;
-      overflow: hidden;
-      width: 100%;
-    }
+/* Styling Konten Markdown */
+.markdown-content p {
+  margin: 0 0 12px 0;
+}
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+.markdown-content ul, .markdown-content ol {
+  margin: 0 0 12px 20px;
+  padding: 0;
+}
+.markdown-content li {
+  margin-bottom: 4px;
+}
+.markdown-content h1, .markdown-content h2, .markdown-content h3, 
+.markdown-content h4, .markdown-content h5, .markdown-content h6 {
+  color: inherit;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+}
+.markdown-content h1 { font-size: 1.35rem; }
+.markdown-content h2 { font-size: 1.2rem; }
+.markdown-content h3 { font-size: 1.05rem; }
 
-    .code-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #181825;
-      padding: 6px 14px;
-      font-size: 0.7rem;
-      color: #cdd6f4;
-      border-bottom: 1px solid #313244;
-      font-family: 'JetBrains Mono', monospace;
-    }
+/* Blok Kode Modern & Tombol Salin */
+.code-block-wrapper {
+  position: relative;
+  background: #1e1e2e;
+  border-radius: 8px;
+  margin: 14px 0;
+  border: 1px solid #313244;
+  overflow: hidden;
+  width: 100%;
+}
 
-    .copy-btn {
-      background: transparent;
-      border: none;
-      color: #a6adc8;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.7rem;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: all 0.2s;
-    }
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #181825;
+  padding: 6px 14px;
+  font-size: 0.7rem;
+  color: #cdd6f4;
+  border-bottom: 1px solid #313244;
+  font-family: 'JetBrains Mono', monospace;
+}
 
-    .copy-btn:hover {
-      background: #313244;
-      color: #f5c2e7;
-    }
+.copy-btn {
+  background: transparent;
+  border: none;
+  color: #a6adc8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
 
-    .code-block-wrapper pre {
-      margin: 0;
-      padding: 12px 14px;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.45;
-      color: #cdd6f4;
-    }
+.copy-btn:hover {
+  background: #313244;
+  color: #f5c2e7;
+}
 
-    /* Tabel di dalam Markdown */
-    .markdown-content table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 14px 0;
-      font-size: 0.85rem;
-    }
-    .markdown-content th, .markdown-content td {
-      border: 1px solid #e5e7eb;
-      padding: 8px 12px;
-      text-align: left;
-    }
-    .markdown-content th {
-      background: #f9fafb;
-      font-weight: 600;
-    }
+.code-block-wrapper pre {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #cdd6f4;
+}
 
-    /* Typing indicator flat style */
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 12px 0 12px 44px; /* Samakan posisi horizontal dengan text body AI */
-    }
+/* Tabel di dalam Markdown */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 0.85rem;
+}
+.markdown-content th, .markdown-content td {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 8px 12px;
+  text-align: left;
+}
+.markdown-content th {
+  background: rgba(148, 163, 184, 0.05);
+  font-weight: 600;
+}
 
-    .typing-dot {
-      width: 6px;
-      height: 6px;
-      background: #9ca3af;
-      border-radius: 50%;
-      animation: typingBounce 1.4s infinite ease-in-out;
-    }
+/* Typing indicator flat style */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 0 12px 44px; 
+}
 
-    .typing-dot:nth-child(1) { animation-delay: 0s; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #9ca3af;
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite ease-in-out;
+}
 
-    @keyframes typingBounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30% { transform: translateY(-6px); opacity: 1; }
-    }
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
 
-    /* Custom scroll to top fab */
-    .scroll-top-fab {
-      bottom: 80px;
-      right: 16px;
-    }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    /* Styling Sidebar & Conversation List */
-    .conversation-item {
-      --padding-start: 16px;
-      --padding-end: 8px;
-      --inner-padding-end: 0px;
-      cursor: pointer;
-    }
-    .conversation-item.active {
-      --background: #f3f4f6;
-      font-weight: 500;
-    }
-    .delete-conv-btn {
-      margin: 0;
-      height: 32px;
-    }
+/* Custom scroll to top fab */
+.scroll-top-fab {
+  bottom: 80px;
+  right: 16px;
+}
 
- .empty-chat {
+/* Styling Sidebar & Conversation List */
+.conversation-item {
+  --padding-start: 16px;
+  --padding-end: 8px;
+  --inner-padding-end: 0px;
+  cursor: pointer;
+}
+.conversation-item.active {
+  --background: rgba(79, 70, 229, 0.06);
+  font-weight: 500;
+}
+.delete-conv-btn {
+  margin: 0;
+  height: 32px;
+}
+
+.empty-chat {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -264,744 +272,550 @@
   align-items: center;
 }
 
-    ion-footer {
-      background: white;
-      border-top: 1px solid #f3f4f6;
-    }
+ion-footer {
+  background: white;
+  border-top: 1px solid #f3f4f6;
+}
 
-    /* GAYA FOOTER INPUT BARU (MODERN & DINAMIS) */
-    .footer-wrapper {
-      max-width: 850px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 10px 16px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-    }
+/* GAYA FOOTER INPUT BARU (MODERN & DINAMIS) */
+.footer-wrapper {
+  max-width: 850px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
 
-    .input-container-modern {
-      display: flex;
-      align-items: flex-end;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 24px;
-      padding: 4px 8px 4px 12px;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-sizing: border-box;
-    }
+.input-container-modern {
+  display: flex;
+  align-items: flex-end;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 4px 8px 4px 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
 
-    .input-container-modern:focus-within {
-      background: #ffffff;
-      border-color: #4f46e5;
-      box-shadow: 0 4px 18px rgba(79, 70, 229, 0.1);
-      overflow-y: auto;
-    }
+.input-container-modern:focus-within {
+  background: #ffffff;
+  border-color: #4f46e5;
+  box-shadow: 0 4px 18px rgba(79, 70, 229, 0.1);
+  overflow-y: auto;
+}
 
-    /* Textarea Responsif: Mengembang dari 1 baris ke 3 baris */
-    .modern-textarea {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-family: inherit;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      padding: 10px 8px;
-      margin: 0;
-      min-height: 40px;
-      max-height: 120px;
-      height: 40px;
-      resize: none;
-      color: #1f2937;
-      transition: height 0.2s ease-in-out;
-      box-sizing: border-box;
-      overflow-y: hidden;
-    }
+@media (prefers-color-scheme: dark) {
+  .input-container-modern {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .input-container-modern:focus-within {
+    background: #0f172a;
+    border-color: #6366f1;
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.15);
+  }
+}
 
-    /* Tombol Klip Unggah File */
-    .attach-btn {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #6b7280;
-      font-size: 1.5rem;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.2s;
-      flex-shrink: 0;
-      margin-bottom: 2px;
-    }
+/* Textarea Responsif */
+.modern-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 10px 8px;
+  margin: 0;
+  min-height: 40px;
+  max-height: 120px;
+  height: 40px;
+  resize: none;
+  color: inherit;
+  transition: height 0.2s ease-in-out;
+  box-sizing: border-box;
+  overflow-y: hidden;
+}
 
-    .attach-btn:hover {
-      color: #4f46e5;
-      background: rgba(79, 70, 229, 0.08);
-    }
+/* Tombol Klip Unggah File */
+.attach-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #6b7280;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
 
-    /* Tombol Kirim Bundar Khas AI Modern */
-    .send-btn-modern {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #4f46e5;
-      font-size: 1.7rem;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: transform 0.15s ease;
-      flex-shrink: 0;
-      margin-bottom: 2px;
-    }
+.attach-btn:hover {
+  color: #4f46e5;
+  background: rgba(79, 70, 229, 0.08);
+}
 
-    .send-btn-modern:hover {
-      transform: scale(1.08);
-    }
+/* Tombol Kirim Bundar Khas AI Modern */
+.send-btn-modern {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #4f46e5;
+  font-size: 1.7rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
 
-    .send-btn-modern:active {
-      transform: scale(0.92);
-    }
-    
-    .mic-btn {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #3b82f6;
-      font-size: 1.7rem;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: transform 0.15s ease;
-      flex-shrink: 0;
-      margin-bottom: 2px;
-    }
+.send-btn-modern:hover {
+  transform: scale(1.08);
+}
 
-    .mic-btn:hover {
-      transform: scale(1.08);
-    }
+.send-btn-modern:active {
+  transform: scale(0.92);
+}
 
-    .mic-btn:active {
-      transform: scale(0.92);
-    }
+.mic-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #3b82f6;
+  font-size: 1.7rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
 
-    /* Sembunyikan Input File Bawaan Browser */
-    .hidden-input {
-      display: none;
-    }
+.mic-btn:hover {
+  transform: scale(1.08);
+}
 
-    /* Cip Pratinjau Berkas */
-    .attachment-preview-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-      width: 100%;
-    }
+.mic-btn:active {
+  transform: scale(0.92);
+}
 
-    .file-chip {
-      display: inline-flex;
-      align-items: center;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 12px;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      color: #1e40af;
-      gap: 6px;
-      animation: popIn 0.2s ease-out;
-    }
+.hidden-input {
+  display: none;
+}
 
-    .file-chip button {
-      background: transparent;
-      border: none;
-      color: #ef4444;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      font-size: 0.95rem;
-      padding: 0;
-    }
+/* Cip Pratinjau Berkas */
+.attachment-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+}
 
-    @keyframes popIn {
-      from { transform: scale(0.85); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: #1e40af;
+  gap: 6px;
+  animation: popIn 0.2s ease-out;
+}
 
-    ion-split-pane {
-      --side-width: var(--sidebar-width);
-      --side-max-width: 320px;
-    }
-    ion-menu {
-      --width: var(--sidebar-width);
-    }
+.file-chip button {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+}
 
-  /* Modern Glassmorphism Toolbar Override */
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+ion-split-pane {
+  --side-width: var(--sidebar-width);
+  --side-max-width: 320px;
+}
+ion-menu {
+  --width: var(--sidebar-width);
+}
+
+/* Modern Glassmorphism Toolbar Override */
+.modern-header {
+  --background: transparent !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  transition: all 0.3s ease;
+}
+
+/* Dark mode support automatically integrated */
+@media (prefers-color-scheme: dark) {
   .modern-header {
-    --background: transparent !important;
-    background: rgba(255, 255, 255, 0.75) !important;
-    backdrop-filter: blur(16px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    transition: all 0.3s ease;
+    background: rgba(15, 23, 42, 0.75) !important;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
   }
+}
 
-  /* Dark mode support automatically integrated */
-  @media (prefers-color-scheme: dark) {
-    .modern-header {
-      background: rgba(15, 23, 42, 0.75) !important;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-      color: white;
-    }
-  }
+/* Custom Menu Toggle Button Styling */
+.modern-menu-btn {
+  --color: #475569 !important;
+  --background-hover: rgba(0, 0, 0, 0.05) !important;
+  --border-radius: 12px;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+.modern-menu-btn:active {
+  transform: scale(0.92);
+}
 
-  /* Custom Menu Toggle Button Styling */
-  .modern-menu-btn {
-    --color: #475569 !important;
-    --background-hover: rgba(0, 0, 0, 0.05) !important;
-    --border-radius: 12px;
-    margin-left: 8px;
-    transition: transform 0.2s ease;
-  }
-  .modern-menu-btn:active {
-    transform: scale(0.92);
-  }
+/* Sleek Flex Title Container with Dynamic Pulse Badge */
+.header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+}
 
-  /* Sleek Flex Title Container with Dynamic Pulse Badge */
-  .header-title-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Inter', sans-serif;
-  }
+.header-title-main {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #0f172a, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
+@media (prefers-color-scheme: dark) {
   .header-title-main {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #0f172a, #2563eb);
+    background: linear-gradient(135deg, #f8fafc, #60a5fa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+}
 
-  @media (prefers-color-scheme: dark) {
-    .header-title-main {
-      background: linear-gradient(135deg, #f8fafc, #60a5fa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
+/* AI Status Pulsing Indicator Badge */
+.ai-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #059669;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 
-  /* AI Status Pulsing Indicator Badge */
+@media (prefers-color-scheme: dark) {
   .ai-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    padding: 3px 8px;
-    border-radius: 9999px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #059669;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    background: rgba(52, 211, 153, 0.15);
+    border-color: rgba(52, 211, 153, 0.25);
+    color: #34d399;
   }
+}
 
-  @media (prefers-color-scheme: dark) {
-    .ai-status-badge {
-      background: rgba(52, 211, 153, 0.15);
-      border-color: rgba(52, 211, 153, 0.25);
-      color: #34d399;
-    }
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #10b981;
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  background-color: #10b981;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: badge-pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes badge-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
   }
-
-  .pulse-dot {
-    width: 6px;
-    height: 6px;
-    background-color: #10b981;
-    border-radius: 50%;
-    position: relative;
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
   }
+}
 
-  .pulse-dot::after {
-    content: '';
-    width: 100%;
-    height: 100%;
-    background-color: #10b981;
-    border-radius: 50%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    animation: badge-pulse 1.8s infinite ease-in-out;
+/* Premium Clear Trash Action Button */
+.modern-clear-btn {
+  --color: #64748b !important;
+  --background-hover: rgba(239, 68, 68, 0.08) !important;
+  --color-hover: #ef4444 !important;
+  border-radius: 12px;
+  margin-right: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-clear-btn:hover {
+  --color: #ef4444 !important;
+  transform: rotate(6deg);
+}
+
+.modern-clear-btn:active {
+  transform: scale(0.9) rotate(0deg);
+}
+
+/* Styling Khusus untuk Welcome Screen Premium */
+.premium-welcome-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Glowing Avatar Circle */
+.welcome-avatar-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.welcome-avatar-glow {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: linear-gradient(135deg, #2563eb, #10b981);
+  border-radius: 50%;
+  filter: blur(12px);
+  opacity: 0.45;
+  animation: avatar-pulse 3s infinite alternate;
+}
+
+.welcome-avatar-icon {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  font-size: 38px;
+}
+
+@keyframes avatar-pulse {
+  0% { transform: scale(0.96); opacity: 0.35; }
+  100% { transform: scale(1.05); opacity: 0.6; }
+}
+
+/* Typography */
+.welcome-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 10px 0;
+  background: linear-gradient(135deg, #0f172a, #2563eb, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .welcome-title {
+    background: linear-gradient(135deg, #f8fafc, #60a5fa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
+}
 
-  @keyframes badge-pulse {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(2.8);
-      opacity: 0;
-    }
+.welcome-subtitle {
+  font-size: 1rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+  max-width: 540px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .welcome-subtitle {
+    color: #94a3b8;
   }
+}
 
-  /* Premium Clear Trash Action Button */
-  .modern-clear-btn {
-    --color: #64748b !important;
-    --background-hover: rgba(239, 68, 68, 0.08) !important;
-    --color-hover: #ef4444 !important;
-    border-radius: 12px;
-    margin-right: 8px;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+/* Capabilities Badges */
+.capability-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.cap-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+@media (prefers-color-scheme: dark) {
+  .cap-badge {
+    background: rgba(51, 65, 85, 0.4);
+    border-color: rgba(71, 85, 105, 0.3);
+    color: #cbd5e1;
   }
+}
 
-  .modern-clear-btn:hover {
-    --color: #ef4444 !important;
-    transform: rotate(6deg);
+.cap-badge ion-icon {
+  font-size: 1.05rem;
+}
+
+/* Suggestions Grid */
+.suggestions-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 480px) {
+  .suggestions-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .modern-clear-btn:active {
-    transform: scale(0.9) rotate(0deg);
+.suggestion-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .suggestion-card {
+    background: #1e293b;
+    border-color: #334155;
   }
+}
 
-    /* Styling Khusus untuk Welcome Screen Premium */
-    .premium-welcome-container {
-      display: block;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-    }
+.suggestion-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+  transform: translateY(-2px);
+}
 
-    /* Glowing Avatar Circle */
-    .welcome-avatar-wrapper {
-      position: relative;
-      margin-bottom: 24px;
-    }
+.suggestion-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #0f172a;
+}
 
-    .welcome-avatar-glow {
-      position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
-      background: linear-gradient(135deg, #2563eb, #10b981);
-      border-radius: 50%;
-      filter: blur(12px);
-      opacity: 0.45;
-      animation: avatar-pulse 3s infinite alternate;
-    }
+@media (prefers-color-scheme: dark) {
+  .suggestion-card-header {
+    color: #f1f5f9;
+  }
+}
 
-    .welcome-avatar-icon {
-      position: relative;
-      width: 84px;
-      height: 84px;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #38bdf8;
-      font-size: 38px;
-    }
+.suggestion-card-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+}
 
-    @keyframes avatar-pulse {
-      0% { transform: scale(0.96); opacity: 0.35; }
-      100% { transform: scale(1.05); opacity: 0.6; }
-    }
+@media (prefers-color-scheme: dark) {
+  .suggestion-card-desc {
+    color: #94a3b8;
+  }
+}
 
-    /* Typography */
-    .welcome-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin: 0 0 10px 0;
-      background: linear-gradient(135deg, #0f172a, #2563eb, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+/* Tambahan Styling Efek Mic & TTS */
+.voice-control-btn {
+  --color: #64748b !important;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.voice-control-btn.speaking-active {
+  --color: #10b981 !important;
+}
 
-    @media (prefers-color-scheme: dark) {
-      .welcome-title {
-        background: linear-gradient(135deg, #f8fafc, #60a5fa, #34d399);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-    }
+.mic-btn.recording-active {
+  color: #ef4444 !important;
+  animation: mic-pulse 1.5s infinite alternate;
+}
 
-    .welcome-subtitle {
-      font-size: 1rem;
-      color: #64748b;
-      line-height: 1.6;
-      margin: 0 0 30px 0;
-      max-width: 540px;
-    }
+@keyframes mic-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.12); opacity: 1; }
+}
 
-    @media (prefers-color-scheme: dark) {
-      .welcome-subtitle {
-        color: #94a3b8;
-      }
-    }
+.ai-speak-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+  padding: 4px;
+  margin-top: 6px;
+  transition: color 0.2s;
+}
 
-    /* Capabilities Badges */
-    .capability-badges-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 40px;
-    }
+.ai-speak-btn:hover {
+  color: #3b82f6;
+}
 
-    .cap-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(148, 163, 184, 0.08);
-      border: 1px solid rgba(148, 163, 184, 0.12);
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #475569;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .cap-badge {
-        background: rgba(51, 65, 85, 0.4);
-        border-color: rgba(71, 85, 105, 0.3);
-        color: #cbd5e1;
-      }
-    }
-
-    .cap-badge ion-icon {
-      font-size: 1.05rem;
-    }
-
-    /* Suggestions Grid */
-    .suggestions-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media (min-width: 480px) {
-      .suggestions-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .suggestion-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 16px;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .suggestion-card {
-        background: #1e293b;
-        border-color: #334155;
-      }
-    }
-
-    .suggestion-card:hover {
-      border-color: #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .suggestion-card-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #0f172a;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .suggestion-card-header {
-        color: #f1f5f9;
-      }
-    }
-
-    .suggestion-card-desc {
-      font-size: 0.78rem;
-      color: #64748b;
-      line-height: 1.4;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .suggestion-card-desc {
-        color: #94a3b8;
-      }
-    }
-
-    /* Styling Khusus untuk Welcome Screen Premium */
-    .premium-welcome-container {
-      display: block;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-    }
-
-    /* Glowing Avatar Circle */
-    .welcome-avatar-wrapper {
-      position: relative;
-      margin-bottom: 24px;
-    }
-
-    .welcome-avatar-glow {
-      position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
-      background: linear-gradient(135deg, #2563eb, #10b981);
-      border-radius: 50%;
-      filter: blur(12px);
-      opacity: 0.45;
-      animation: avatar-pulse 3s infinite alternate;
-    }
-
-    .welcome-avatar-icon {
-      position: relative;
-      width: 84px;
-      height: 84px;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #38bdf8;
-      font-size: 38px;
-    }
-
-    @keyframes avatar-pulse {
-      0% { transform: scale(0.96); opacity: 0.35; }
-      100% { transform: scale(1.05); opacity: 0.6; }
-    }
-
-    /* Typography */
-    .welcome-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin: 0 0 10px 0;
-      background: linear-gradient(135deg, #0f172a, #2563eb, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .welcome-title {
-        background: linear-gradient(135deg, #f8fafc, #60a5fa, #34d399);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-    }
-
-    .welcome-subtitle {
-      font-size: 1rem;
-      color: #64748b;
-      line-height: 1.6;
-      margin: 0 0 30px 0;
-      max-width: 540px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .welcome-subtitle {
-        color: #94a3b8;
-      }
-    }
-
-    /* Capabilities Badges */
-    .capability-badges-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 40px;
-    }
-
-    .cap-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(148, 163, 184, 0.08);
-      border: 1px solid rgba(148, 163, 184, 0.12);
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #475569;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .cap-badge {
-        background: rgba(51, 65, 85, 0.4);
-        border-color: rgba(71, 85, 105, 0.3);
-        color: #cbd5e1;
-      }
-    }
-
-    .cap-badge ion-icon {
-      font-size: 1.05rem;
-    }
-
-    /* Suggestions Grid */
-    .suggestions-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media (min-width: 480px) {
-      .suggestions-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .suggestion-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 16px;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .suggestion-card {
-        background: #1e293b;
-        border-color: #334155;
-      }
-    }
-
-    .suggestion-card:hover {
-      border-color: #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .suggestion-card-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #0f172a;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .suggestion-card-header {
-        color: #f1f5f9;
-      }
-    }
-
-    .suggestion-card-desc {
-      font-size: 0.78rem;
-      color: #64748b;
-      line-height: 1.4;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .suggestion-card-desc {
-        color: #94a3b8;
-      }
-    }
-
-    /* Tambahan Styling Efek Mic & TTS */
-    .voice-control-btn {
-      --color: #64748b !important;
-      border-radius: 12px;
-      transition: all 0.2s ease;
-    }
-    .voice-control-btn.speaking-active {
-      --color: #10b981 !important;
-    }
-
-    .mic-btn {
-      background: none;
-      border: none;
-      color: #64748b;
-      font-size: 1.7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.25s ease;
-    }
-
-    .mic-btn:hover {
-      color: #3b82f6;
-    }
-
-    .mic-btn.recording-active {
-      color: #ef4444 !important;
-      animation: mic-pulse 1.5s infinite alternate;
-    }
-
-    @keyframes mic-pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      100% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
-    }
-
-    .ai-speak-btn {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      font-size: 1.15rem;
-      padding: 4px;
-      margin-top: 6px;
-      transition: color 0.2s;
-    }
-
-    .ai-speak-btn:hover {
-      color: #3b82f6;
-    }
-
-    .ai-speak-btn.active-speaking {
-      color: #10b981;
-    }
+.ai-speak-btn.active-speaking {
+  color: #10b981;
+}
