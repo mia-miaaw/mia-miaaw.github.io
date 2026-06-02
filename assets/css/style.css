@@ -20,7 +20,7 @@ body, ion-app, ion-item, ion-label, ion-title, ion-button {
 }
 
 @media (prefers-color-scheme: dark) {
-  ion-content #chat-content {
+  ion-app {
     background: #1e293b;
   }
 }
@@ -836,4 +836,229 @@ ion-menu {
 
 .ai-speak-btn.active-speaking {
   color: #10b981;
+}
+/* ==========================================
+   PERBAIKAN DARK THEME UNTUK WELCOME SCREEN
+   ========================================== */
+@media (prefers-color-scheme: dark) {
+  /* 1. Latar belakang utama Welcome Screen saat mode gelap */
+  .empty-chat {
+    background: #1e293b !important; /* Menyesuaikan warna latar ion-app gelap */
+  }
+
+  .premium-welcome-container {
+    background: transparent;
+  }
+
+  /* 2. Warna Teks Utama (Judul & Subtitle) agar terang */
+  .welcome-title {
+    color: #f1f5f9 !important; /* Putih keabuan terang */
+  }
+
+  .welcome-subtitle {
+    color: #94a3b8 !important; /* Abu-abu soft agar nyaman dibaca */
+  }
+
+  /* 3. Penyesuaian Badge Kapabilitas Model AI */
+  .cap-badge {
+    background: #0f172a !important; /* Latar badge lebih gelap */
+    border-color: #334155 !important; /* Border tipis gelap */
+    color: #cbd5e1 !important; /* Teks badge terang */
+  }
+
+  /* 4. Perbaikan Kartu Saran (Suggestion Cards) */
+  .suggestions-grid .suggestion-card {
+    background: #0f172a !important; /* Latar belakang kartu gelap pekat */
+    border-color: #1e293b !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Judul di dalam Kartu Saran */
+  .suggestions-grid .suggestion-card-header {
+    color: #f8fafc !important; /* Teks judul kartu putih terang */
+  }
+
+  /* Deskripsi di dalam Kartu Saran */
+  .suggestions-grid .suggestion-card-desc {
+    color: #94a3b8 !important; /* Teks deskripsi kartu abu-abu soft */
+  }
+
+  /* Efek Hover Kartu Saran saat Mode Gelap */
+  .suggestions-grid .suggestion-card:hover {
+    border-color: #3b82f6 !important; /* Tetap menyala biru saat di-hover */
+    background: #1e293b !important; /* Sedikit lebih terang saat di-hover */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+  }
+}
+/* ==========================================
+   PERBAIKAN DARK THEME UNTUK SIDEBAR (ION-MENU)
+   ========================================== */
+@media (prefers-color-scheme: dark) {
+  /* 1. Mengatur warna latar belakang utama sidebar menu */
+  ion-menu {
+    --background: #0f172a !important; /* Biru gelap pekat (Slate 900) */
+  }
+
+  /* 2. Menyesuaikan header bagian atas riwayat chat */
+  ion-menu ion-header {
+    background: #0f172a !important;
+  }
+  
+  ion-menu .modern-header {
+    background: rgba(15, 23, 42, 0.8) !important; /* Transparansi blur mode gelap */
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5) !important;
+  }
+
+  /* Judul teks "Riwayat Chat" */
+  ion-menu ion-title {
+    color: #cbd5e1 !important; /* Teks terang */
+  }
+
+  /* 3. Menyesuaikan daftar list percakapan */
+  ion-menu ion-list {
+    background: transparent !important;
+    --background: transparent !important;
+  }
+
+  /* Baris item riwayat chat */
+  ion-menu .conversation-item {
+    --background: transparent !important;
+    --color: #94a3b8 !important; /* Warna teks riwayat pasif */
+    --border-color: rgba(51, 65, 85, 0.3) !important; /* Garis pembatas tipis */
+  }
+
+  /* Ketika item riwayat chat sedang aktif/terpilih */
+  ion-menu .conversation-item.active {
+    --background: rgba(99, 102, 241, 0.15) !important; /* Efek highlight biru indigo */
+    --color: #6366f1 !important; /* Warna teks berubah jadi indigo terang */
+    font-weight: 600;
+  }
+
+  /* Teks "Memuat riwayat..." atau "Tidak ada obrolan" */
+  ion-menu ion-label {
+    color: #94a3b8 !important;
+  }
+
+  /* 4. Menyesuaikan bagian profil user di sidebar atas */
+  #sidebar-user-container {
+    background: #1e293b !important; /* Sedikit lebih terang dibanding latar menu */
+    color: #f1f5f9 !important;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  }
+
+  /* 5. Menyesuaikan bagian bawah sidebar (Footer) */
+  ion-menu ion-footer {
+    background: #0f172a !important;
+    border-top: 1px solid rgba(51, 65, 85, 0.4) !important;
+  }
+
+  ion-menu ion-toolbar {
+    --background: #0f172a !important;
+    background: #0f172a !important;
+  }
+
+  /* Tampilan saldo token di footer sidebar */
+  #token-balance-display {
+    background: #1e293b !important;
+    color: #38bdf8 !important; /* Warna teks cyan info token */
+    border: 1px solid #334155 !important;
+  }
+
+  /* Tombol hapus/sampah di footer sidebar */
+  .modern-clear-btn {
+    --color: #94a3b8 !important;
+  }
+}
+/* ==========================================
+   PERBAIKAN TOTAL MODE GELAP AREA CHAT AKTIF
+   ========================================== */
+@media (prefers-color-scheme: dark) {
+  /* 1. Paksa Latar Belakang Konten Utama Chat Mengikuti Tema Gelap */
+  #chat-content, 
+  ion-content,
+  .chat-container {
+    --background: #1e293b !important;
+    background: #1e293b !important;
+  }
+
+  /* 2. Warna Teks Default di Dalam Obrolan (Pesan AI/Asisten) */
+  .message.ai .message-body {
+    color: #f1f5f9 !important; /* Teks asisten AI putih terang */
+  }
+
+  /* 3. Penyesuaian Teks Markdown di Dalam Chat */
+  .markdown-content, 
+  .markdown-content p, 
+  .markdown-content li {
+    color: #cbd5e1 !important; /* Warna abu-abu terang yang ramah di mata */
+  }
+
+  .markdown-content h1, 
+  .markdown-content h2, 
+  .markdown-content h3, 
+  .markdown-content h4 {
+    color: #f8fafc !important; /* Judul heading markdown putih pekat */
+  }
+
+  /* 4. Perbaikan Komponen Footer & Input Bar Saat Chat Aktif */
+  ion-footer, 
+  ion-footer ion-toolbar {
+    --background: #1e293b !important;
+    background: #1e293b !important;
+    border-top: 1px solid #334155 !important; /* Pembatas tipis gelap */
+  }
+
+  .footer-wrapper {
+    background: #1e293b !important;
+  }
+
+  /* Kotak pembungkus input teks textarea */
+  .input-container-modern {
+    background: #0f172a !important; /* Latar input gelap pekat (Slate 900) */
+    border-color: #334155 !important;
+    color: #f1f5f9 !important; /* Teks ketikan pengguna berwarna putih */
+  }
+
+  /* Placeholder teks "Tanyakan sesuatu..." */
+  .modern-textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  /* 5. Penyesuaian Tombol-Tombol Aksi di Area Input */
+  .attach-btn {
+    color: #94a3b8 !important; /* Ikon klip kertas abu-abu soft */
+  }
+
+  .attach-btn:hover {
+    color: #6366f1 !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+  }
+
+  /* Tombol mikrofon bawaan */
+  #mic-record-btn {
+    color: #60a5fa !important; /* Biru terang agar kontras di latar gelap */
+  }
+
+  /* Tombol kirim pesan (Panah Atas) */
+  .send-btn-modern {
+    color: #818cf8 !important; /* Indigo terang */
+  }
+
+  /* Tombol kontrol suara / Auto Speak Toggle di Header */
+  .voice-control-btn {
+    --color: #94a3b8 !important;
+  }
+  
+  .voice-control-btn.speaking-active {
+    --color: #34d399 !important; /* Menyala hijau jika aktif membaca */
+  }
+
+  /* 6. Indikator Mengetik AI (Typing Indicator) */
+  .typing-indicator {
+    background: transparent !important;
+  }
+
+  .typing-dot {
+    background: #64748b !important; /* Warna titik membal disesuaikan */
+  }
 }
