@@ -16,12 +16,12 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://mia-miaaw.github.io" />
 
-  <!-- Open Graph / Facebook / WhatsApp / Discord (Sleek Preview Cards) -->
+  <!-- Open Graph / Facebook / WhatsApp / Discord -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mia-miaaw.github.io" />
   <meta property="og:title" content="MIA - AI Chat Assistant | Asisten Pintar Multimodal" />
   <meta property="og:description" content="Asisten kecerdasan buatan pintar yang siap membantu pemrograman, analisis dokumen, pembaca halaman web otomatis, dan deteksi gambar instan secara gratis." />
-  <meta property="og:image" content="https://mia-miaaw.github.io/assets/og-preview.jpg" />
+  <meta property="og:image" content="https://mia-miaaw.github.io/assets/images/og-preview.png" />
   <meta property="og:locale" content="id_ID" />
   <meta property="og:site_name" content="MIA AI" />
 
@@ -30,14 +30,14 @@
   <meta name="twitter:url" content="https://mia-miaaw.github.io" />
   <meta name="twitter:title" content="MIA - AI Chat Assistant" />
   <meta name="twitter:description" content="Asisten kecerdasan buatan pintar multimodal pendukung analisis kode pemrograman dan visual gambar secara gratis." />
-  <meta name="twitter:image" content="https://mia-miaaw.github.io/assets/og-preview.jpg" />
+  <meta name="twitter:image" content="https://mia-miaaw.github.io/assets/images/og-preview.png" />
 
-  <!-- PWA & Mobile Browser Optimization (Matches Deep Slate Dark Theme) -->
+  <!-- PWA & Mobile Browser Optimization -->
   <meta name="theme-color" content="#1e293b" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <!-- Schema.org JSON-LD Structured Data (Google Search Rich Snippet) -->
+  <!-- Schema.org JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -67,15 +67,12 @@
     ]
   }
   </script>
-  <!-- ==========================================
-       END SEO ENGINE
-       ========================================== -->
 
   <!-- Ionic Core 8 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@8/css/ionic.bundle.css" />
   <link rel="stylesheet" href="./assets/css/style.css" />
 
-  <!-- Google Fonts: Inter & JetBrains Mono untuk Kode -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Markdown Parser & XSS Sanitizer -->
@@ -87,9 +84,9 @@
   <ion-app>
     <ion-split-pane content-id="main-content" when="md">
 
-      <!-- SIDEBAR: Profil User & Riwayat Chat -->
+      <!-- SIDEBAR: Profil User, Menu Utama & Riwayat Chat -->
       <ion-menu side="start" menu-id="chatHistoryMenu" content-id="main-content" swipeGesture="true">
-        <!-- Profile info section -->
+        <!-- Section Info Profil User -->
         <div id="sidebar-user-container"></div>
 
         <ion-header class="ion-no-border">
@@ -104,23 +101,30 @@
         </ion-header>
         
         <ion-content>
+          <!-- Riwayat Obrolan -->
           <ion-list id="conversation-list" lines="full">
             <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
               <ion-label class="ion-text-center" color="medium">Memuat riwayat...</ion-label>
             </ion-item>
           </ion-list>
         </ion-content>
+        
         <ion-footer>
           <ion-toolbar>
-            <ion-buttons slot="end">
-              
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px;">
+              <!-- Tombol Cek Riwayat Pembelian -->
+              <ion-button id="open-history-btn" fill="clear" color="medium" title="Riwayat Pembelian" style="--padding-start: 4px; --padding-end: 4px;">
+                <ion-icon slot="icon-only" name="receipt-outline"></ion-icon>
+              </ion-button>
+
               <!-- Tampilan Saldo Token Dinamis -->
-              <div id="token-balance-display" class="token-balance-container" style="margin-right: 8px;"></div>
+              <div id="token-balance-display" class="token-balance-container"></div>
               
               <ion-button id="clear-current-chat-btn" fill="clear" class="modern-clear-btn" title="Bersihkan Percakapan">
                 <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
               </ion-button>
-            </ion-buttons></ion-toolbar>
+            </div>
+          </ion-toolbar>
         </ion-footer>
       </ion-menu>
 
@@ -147,68 +151,60 @@
               <ion-button id="auto-speak-toggle" class="voice-control-btn" fill="clear">
                 <ion-icon slot="icon-only" name="volume-mute-outline"></ion-icon>
               </ion-button>
-              </ion-buttons>
+            </ion-buttons>
           </ion-toolbar>
         </ion-header>
 
-    <ion-content id="chat-content" scroll-events="true">
-    
-      <div class="empty-chat" style="display: flex; flex-direction: column; width: 100%;" id="empty-chat-placeholder">
-        <div class="premium-welcome-container">
-          
-          <div class="welcome-avatar-wrapper">
-            <div class="welcome-avatar-glow"></div>
-            <div class="welcome-avatar-icon">
-              <ion-icon name="sparkles"></ion-icon>
-            </div>
-          </div>
-    
-          <h1 class="welcome-title">Halo, Aku MIA</h1>
-          <p class="welcome-subtitle">
-            Asisten kecerdasan buatan multimodal yang siap membantumu menyusun kode pemrograman, menganalisis berkas dokumen, serta membaca gambar secara instan.
-          </p>
-    
-          <div class="capability-badges-row">
-            <div class="cap-badge">
-              <ion-icon name="eye" style="color: #10b981;"></ion-icon>
-              <span>Llama 3.2 Vision</span>
-            </div>
-            <div class="cap-badge">
-              <ion-icon name="mic" style="color: #3b82f6;"></ion-icon>
-              <span>Speech To Speech</span>
-            </div>
-            <div class="cap-badge">
-              <ion-icon name="code-working" style="color: #f59e0b;"></ion-icon>
-              <span>Qwen 2.5 Coder</span>
-            </div>
-          </div>
-    
-          <div class="suggestions-grid">
-            
-            <div class="suggestion-card" data-prompt="Tolong ubah sketsa gambar yang saya lampirkan ini menjadi kode HTML, CSS, dan Tailwind CSS yang rapi dan responsif.">
-              <div class="suggestion-card-header">
-                <ion-icon name="image-outline" style="color: #10b981; font-size: 1.1rem;"></ion-icon>
-                <span>Ubah Gambar ke HTML</span>
+        <ion-content id="chat-content" scroll-events="true">
+        
+          <div class="empty-chat" style="display: flex; flex-direction: column; width: 100%;" id="empty-chat-placeholder">
+            <div class="premium-welcome-container">
+              
+              <div class="welcome-avatar-wrapper">
+                <div class="welcome-avatar-glow"></div>
+                <div class="welcome-avatar-icon">
+                  <ion-icon name="sparkles"></ion-icon>
+                </div>
               </div>
-              <div class="suggestion-card-desc">Konversi tangkapan layar atau sketsa corat-coret Anda menjadi kode web siap pakai.</div>
-            </div>
-    
-            <div class="suggestion-card" data-prompt="Bagaimana cara membuat Cloudflare Worker asset server dengan mekanisme cache dan Content Security Policy (CSP)?">
-              <div class="suggestion-card-header">
-                <ion-icon name="cloud-outline" style="color: #3b82f6; font-size: 1.1rem;"></ion-icon>
-                <span>Cloudflare Workers</span>
+        
+              <h1 class="welcome-title">Halo, Aku MIA</h1>
+              <p class="welcome-subtitle">
+                Asisten kecerdasan buatan multimodal pintar yang dikembangkan oleh perempuan bernama "MIA" & Team nya. Siap membantu pemrograman, analisis dokumen, dan web searching realtime!
+              </p>
+        
+              <div class="capability-badges-row">
+                <div class="cap-badge">
+                  <ion-icon name="eye" style="color: #10b981;"></ion-icon>
+                  <span>Llama 3.2 Vision</span>
+                </div>
+                <div class="cap-badge">
+                  <ion-icon name="globe-outline" style="color: #3b82f6;"></ion-icon>
+                  <span>Realtime Search</span>
+                </div>
+                <div class="cap-badge">
+                  <ion-icon name="code-working" style="color: #f59e0b;"></ion-icon>
+                  <span>Qwen 2.5 Coder</span>
+                </div>
               </div>
-              <div class="suggestion-card-desc">Tanyakan seputar deploy, penanganan cache default, KV namespace, hingga CORS di serverless.</div>
-            </div>
-    
-            <div class="suggestion-card" data-prompt="Tolong analisis kode TypeScript ini, cari celah keamanan, potensi error, dan berikan refactor optimal:">
-              <div class="suggestion-card-header">
-                <ion-icon name="bug-outline" style="color: #f59e0b; font-size: 1.1rem;"></ion-icon>
-                <span>Refactor & Cari Bug</span>
-              </div>
-              <div class="suggestion-card-desc">Tempel kode Anda untuk diperiksa celah keamanannya secara mendalam.</div>
-            </div>
-    
+        
+              <div class="suggestions-grid">
+                
+                <div class="suggestion-card" data-prompt="cari di internet berita terbaru hari ini mengenai perkembangan teknologi AI di Indonesia">
+                  <div class="suggestion-card-header">
+                    <ion-icon name="search-outline" style="color: #3b82f6; font-size: 1.1rem;"></ion-icon>
+                    <span>Cari Info Terbaru</span>
+                  </div>
+                  <div class="suggestion-card-desc">Gunakan pemicu "cari di internet" untuk mendapatkan hasil pencarian Google realtime.</div>
+                </div>
+        
+                <div class="suggestion-card" data-prompt="Tolong ubah sketsa gambar yang saya lampirkan ini menjadi kode HTML, CSS, dan Tailwind CSS yang rapi dan responsif.">
+                  <div class="suggestion-card-header">
+                    <ion-icon name="image-outline" style="color: #10b981; font-size: 1.1rem;"></ion-icon>
+                    <span>Ubah Gambar ke HTML</span>
+                  </div>
+                  <div class="suggestion-card-desc">Konversi tangkapan layar atau sketsa corat-coret Anda menjadi kode web siap pakai.</div>
+                </div>
+        
                 <div class="suggestion-card" data-prompt="Tolong clone layout dan struktur website dari URL ini menjadi kode HTML lengkap, CSS modern, dan JavaScript mandiri: ">
                   <div class="suggestion-card-header">
                     <ion-icon name="copy-outline" style="color: #ec4899; font-size: 1.1rem;"></ion-icon>
@@ -216,15 +212,23 @@
                   </div>
                   <div class="suggestion-card-desc">Ketik / tempelkan URL target lalu biarkan MIA menganalisis dan menduplikasi visual kodenya secara instan.</div>
                 </div>
-
+        
+                <div class="suggestion-card" data-prompt="Tolong analisis kode TypeScript ini, cari celah keamanan, potensi error, dan berikan refactor optimal:">
+                  <div class="suggestion-card-header">
+                    <ion-icon name="bug-outline" style="color: #f59e0b; font-size: 1.1rem;"></ion-icon>
+                    <span>Refactor & Cari Bug</span>
+                  </div>
+                  <div class="suggestion-card-desc">Tempel kode Anda untuk diperiksa celah keamanannya secara mendalam.</div>
+                </div>
+        
               </div>
-    
-        </div>
-      </div>
-    
-      <div class="chat-container" id="messages-container"></div>
-    
-    </ion-content>
+        
+            </div>
+          </div>
+        
+          <div class="chat-container" id="messages-container"></div>
+        
+        </ion-content>
 
         <!-- FOOTER: Input & Attachment Modern -->
         <ion-footer>
@@ -276,6 +280,24 @@
         </ion-fab>
       </div>
     </ion-split-pane>
+
+    <!-- MODAL PREMIUM: RIWAYAT TRANSAKSI KONSUMEN -->
+    <ion-modal id="history-modal" trigger="open-history-btn">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Riwayat Pembelian Token</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="close-history-modal-btn">Tutup</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div id="history-modal-content">
+          <p class="ion-text-center" style="color: var(--ion-color-medium);">Memuat data riwayat transaksi...</p>
+        </div>
+      </ion-content>
+    </ion-modal>
+
   </ion-app>
 
   <!-- IONIC CORE & IONICONS CDN -->
@@ -283,6 +305,6 @@
   <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/ionic.js"></script>
   <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
-  <script src="https://bucket.mvstream.workers.dev/216d46e85ca7482faa2e28d274d39907dde7fad1/ai/assets/js/mia-ai.js"></script>
+  <script src="./assets/js/mia_app.js"></script>
 </body>
 </html>
