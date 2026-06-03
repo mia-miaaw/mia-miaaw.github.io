@@ -25,48 +25,10 @@
   <meta property="og:locale" content="id_ID" />
   <meta property="og:site_name" content="MIA AI" />
 
-  <!-- Twitter Card / X Platform -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://mia-miaaw.github.io" />
-  <meta name="twitter:title" content="MIA - AI Chat Assistant" />
-  <meta name="twitter:description" content="Asisten kecerdasan buatan pintar multimodal pendukung analisis kode pemrograman dan visual gambar secara gratis." />
-  <meta name="twitter:image" content="https://mia-miaaw.github.io/assets/images/og-preview.png" />
-
   <!-- PWA & Mobile Browser Optimization -->
   <meta name="theme-color" content="#1e293b" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-  <!-- Schema.org JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "MIA - AI Chat Assistant",
-    "url": "https://mia-miaaw.github.io",
-    "description": "Asisten kecerdasan buatan multimodal pintar penunjang coding, analisis visual gambar, dan dokumen.",
-    "applicationCategory": "UtilityApplication, BusinessApplication",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "creator": {
-      "@type": "Organization",
-      "name": "MIA & Team",
-      "url": "https://mia-miaaw.github.io"
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": "0.00",
-      "priceCurrency": "IDR"
-    },
-    "featureList": [
-      "Llama 3.2 Vision Multi-Image Processing",
-      "Qwen 2.5 Coder Advanced Programming Expert",
-      "Realtime Speech-to-Speech",
-      "Auto-Read GitHub and Web Page Documents",
-      "Midtrans Integrated Billing"
-    ]
-  }
-  </script>
 
   <!-- Ionic Core 8 CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@8/css/ionic.bundle.css" />
@@ -101,6 +63,17 @@
         </ion-header>
         
         <ion-content>
+          <!-- Menu Tambahan untuk Premium User -->
+          <ion-list id="premium-features-list" lines="none" style="padding: 4px 8px; display: none;">
+            <ion-item button id="open-r2-explorer-btn" detail="false" style="--background: rgba(99, 102, 241, 0.08); --border-radius: 12px; margin-bottom: 8px;">
+              <ion-icon name="cloud-done-outline" slot="start" color="primary" style="margin-inline-end: 10px;"></ion-icon>
+              <ion-label>
+                <h3 style="font-weight: 600; color: #4f46e5; font-size: 0.85rem;">Pustaka Cloud R2</h3>
+                <p style="font-size: 0.7rem; color: #6366f1;">Akses file premium aman</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+
           <!-- Riwayat Obrolan -->
           <ion-list id="conversation-list" lines="full">
             <ion-item lines="none" class="ion-text-center" style="--min-height: 80px;">
@@ -143,7 +116,6 @@
               </div>
             </ion-title>
             <ion-buttons slot="end">
-              <!-- Tombol pintasan menyalakan/mematikan Auto Read Aloud (Auto TTS) -->
               <ion-button id="auto-speak-toggle" class="voice-control-btn" fill="clear">
                 <ion-icon slot="icon-only" name="volume-mute-outline"></ion-icon>
               </ion-button>
@@ -206,7 +178,7 @@
                     <ion-icon name="copy-outline" style="color: #ec4899; font-size: 1.1rem;"></ion-icon>
                     <span>Clone Web dari URL</span>
                   </div>
-                  <div class="suggestion-card-desc">Ketik / tempelkan URL target lalu biarkan MIA menganalisis dan menduplikasi visual kodenya secara instan.</div>
+                  <div class="suggestion-card-desc">Ketik / tempelkan URL target lalu biarkan MIA menganalisis dan menduplikasi kodenya secara instan.</div>
                 </div>
         
                 <div class="suggestion-card" data-prompt="Tolong analisis kode TypeScript ini, cari celah keamanan, potensi error, dan berikan refactor optimal:">
@@ -267,12 +239,12 @@
             </div>
           </ion-toolbar>
           <div class="footer-version">
-                <span class="ai-disclaimer"><strong>MIA</strong> dapat membuat kesalahan, periksa kembali respon.</span>
-                <div class="ai-status-badge">
-                  <span class="pulse-dot"></span>
-                  <span>v3.2</span>
-                </div>
-                </div>
+            <span class="ai-disclaimer">*<strong>MIA</strong> dapat membuat kesalahan, periksa kembali respon.</span>
+            <div class="ai-status-badge">
+              <span class="pulse-dot"></span>
+              <span>v3.2</span>
+            </div>
+          </div>
         </ion-footer>
 
         <!-- Scroll to top FAB -->
@@ -297,6 +269,33 @@
       <ion-content class="ion-padding">
         <div id="history-modal-content">
           <p class="ion-text-center" style="color: var(--ion-color-medium);">Memuat data riwayat transaksi...</p>
+        </div>
+      </ion-content>
+    </ion-modal>
+
+    <!-- MODAL PREMIUM: R2 FILE MANAGER EXPLORER -->
+    <ion-modal id="r2-explorer-modal">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Pustaka Media Cloud R2</ion-title>
+          <ion-buttons slot="end">
+            <ion-button id="close-r2-modal-btn">Tutup</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.85rem; color: var(--ion-color-medium);">Daftar berkas premium terenkripsi Anda di R2 Storage:</span>
+          <!-- Tombol pintas upload mandiri dari pustaka -->
+          <ion-button id="r2-direct-upload-btn" size="small" color="success">
+            <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+            Unggah File
+          </ion-button>
+          <input type="file" id="r2-direct-file-input" style="display: none;">
+        </div>
+        
+        <div id="r2-files-grid" style="display: flex; flex-direction: column; gap: 10px;">
+          <p class="ion-text-center" style="color: var(--ion-color-medium); padding: 24px;">Memuat pustaka berkas R2...</p>
         </div>
       </ion-content>
     </ion-modal>
