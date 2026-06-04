@@ -41,10 +41,22 @@
     </div>
 
     <script>
-        // Fungsi untuk mengambil parameter dari URL
         const urlParams = new URLSearchParams(window.location.search);
         document.getElementById('orderId').textContent = urlParams.get('order_id') || 'N/A';
         document.getElementById('amount').textContent = 'Rp ' + (urlParams.get('amount') || '0');
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let orderId = urlParams.get('order_id');
+    let amount = urlParams.get('amount');
+
+    if (!orderId) {
+        orderId = localStorage.getItem('last_order_id') || 'N/A';
+    }
+
+    document.getElementById('orderId').textContent = orderId;
+    document.getElementById('amount').textContent = amount ? 'Rp ' + amount : 'N/A';
+};
     </script>
 </body>
 </html>
