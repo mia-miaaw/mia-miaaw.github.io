@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Berhasil | MIA AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="glass-card max-w-md w-full p-8 rounded-3xl shadow-xl border border-slate-100 text-center">
+        <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+            <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">Pembayaran Berhasil!</h1>
+        <p class="text-slate-500 mb-8">Token telah ditambahkan ke akun MIA AI kamu.</p>
+
+        <div class="bg-slate-50 rounded-2xl p-5 mb-8 text-left space-y-3">
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-400">Order ID</span>
+                <span id="orderId" class="font-medium text-slate-700">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-400">Total Pembayaran</span>
+                <span id="amount" class="font-medium text-slate-700">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-400">Status</span>
+                <span class="text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-md text-xs">SUCCESS</span>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='/'" class="w-full py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all">
+            Kembali ke Chat
+        </button>
+    </div>
+
+    <script>
+        // Fungsi untuk mengambil parameter dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('orderId').textContent = urlParams.get('order_id') || 'N/A';
+        document.getElementById('amount').textContent = 'Rp ' + (urlParams.get('amount') || '0');
+    </script>
+</body>
+</html>
