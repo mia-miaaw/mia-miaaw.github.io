@@ -14,7 +14,9 @@
 
     <div class="glass-card max-w-md w-full p-8 rounded-3xl shadow-xl border border-slate-100 text-center">
         <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
-            <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
         </div>
 
         <h1 class="text-2xl font-bold text-slate-800 mb-2">Pembayaran Berhasil!</h1>
@@ -35,28 +37,32 @@
             </div>
         </div>
 
-        <button onclick="window.location.href='/'" class="w-full py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all">
+        <!-- Tombol diperbarui agar mengarahkan dengan hash parameter pemicu auto-kirim pesan -->
+        <button id="btnReturn" class="w-full py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all">
             Kembali ke Chat
         </button>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        document.getElementById('orderId').textContent = urlParams.get('order_id') || 'N/A';
-        document.getElementById('amount').textContent = 'Rp ' + (urlParams.get('amount') || '0');
+        let orderId = urlParams.get('order_id');
+        let amount = urlParams.get('amount');
 
-window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    let orderId = urlParams.get('order_id');
-    let amount = urlParams.get('amount');
+        window.onload = function() {
+            if (!orderId) {
+                orderId = localStorage.getItem('last_order_id') || 'N/A';
+            }
+            if (!amount) {
+                amount = localStorage.getItem('last_amount') || '0';
+            }
 
-    if (!orderId) {
-        orderId = localStorage.getItem('last_order_id') || 'N/A';
-    }
+            document.getElementById('orderId').textContent = orderId;
+            document.getElementById('amount').textContent = 'Rp ' + Number(amount).toLocaleString('id-ID');
 
-    document.getElementById('orderId').textContent = orderId;
-    document.getElementById('amount').textContent = amount ? 'Rp ' + amount : 'N/A';
-};
+            document.getElementById('btnReturn').onclick = function() {
+                window.location.href = `/#auto_check_payment=true&order_id=${encodeURIComponent(orderId)}`;
+            };
+        };
     </script>
 </body>
 </html>
