@@ -980,7 +980,6 @@ ion-menu {
   #token-balance-display {
     background: #1e293b !important;
     color: #38bdf8 !important; /* Warna teks cyan info token */
-    border: 1px solid #334155 !important;
   }
 
   /* Tombol hapus/sampah di footer sidebar */
