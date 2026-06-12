@@ -995,7 +995,8 @@
         body: JSON.stringify({
           sessionId: currentConversationId,
           messages: formattedMessages,
-          image: imageBase64 
+          image: imageBase64,
+          ack: "agree" 
         })
       });
 
