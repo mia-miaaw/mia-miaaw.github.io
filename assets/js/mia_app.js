@@ -996,7 +996,6 @@
           sessionId: currentConversationId,
           messages: formattedMessages,
           image: imageBase64,
-          ack: "agree" 
         })
       });
 
