@@ -385,6 +385,8 @@
         if (!invoice.success || !invoice.token) {
             throw new Error('Gagal memvalidasi token invoice.');
         }
+      localStorage.setItem('last_order_id', invoice.orderId);
+      localStorage.setItem('last_amount', invoice.pricePaid);
 
         const msgDiskon = promoCode ? ` (Dengan Diskon Promo!)` : '';
 
@@ -940,28 +942,33 @@
   }
 
   // ---------- PEMERIKSA PICUAN AUTO-CHAT TRANS-HALAMAN ----------
-  function checkPaymentRedirectTrigger() {
-    const hash = window.location.hash || "";
-    if (hash.includes("auto_check_payment=true")) {
-      const params = new URLSearchParams(hash.replace('#', ''));
-      const orderId = params.get('order_id') || "";
-      
-      // Bersihkan hash dari address bar agar saat di-refresh tidak mengirim pesan berulang
-      window.history.replaceState(null, null, ' ');
+function checkPaymentRedirectTrigger() {
+  const searchParams = new URLSearchParams(window.location.search);
+  const hash = window.location.hash || "";
+  const hashParams = new URLSearchParams(hash.replace(/^#\/?/, ''));
 
-      if (orderId && messageInput) {
-        // Otomatis isi pesan teks ke input field, pemicu desain masukan aktif
-        messageInput.value = `Halo MIA, apakah koin saya sudah bertambah dari order ${orderId}?`;
-        messageInput.style.height = '80px';
-        messageInput.focus();
+  // Cek apakah pemicu ada di Query Search atau Hash Fragment
+  const isTriggered = searchParams.get('auto_check_payment') === 'true' || hash.includes("auto_check_payment=true");
+  
+  if (isTriggered) {
+    const orderId = searchParams.get('order_id') || hashParams.get('order_id') || localStorage.getItem('last_order_id') || "";
 
-        // Kirim otomatis setelah delay mikro-detik agar DOM & state benar-benar siap
-        setTimeout(() => {
-          sendUserMessage();
-        }, 600);
-      }
+    window.history.replaceState(null, null, window.location.pathname);
+
+    fetchUserBalance(5, 1500);
+
+    if (orderId && messageInput) {
+      // Isi pesan otomatis untuk mengonfirmasi koin ke AI
+      messageInput.value = `Halo MIA, apakah koin saya sudah bertambah dari order ${orderId}?`;
+      messageInput.style.height = '80px';
+      messageInput.focus();
+
+      setTimeout(() => {
+        sendUserMessage();
+      }, 800);
     }
   }
+}
 
   // ---------- ALIRAN STREAMING SSE ----------
   async function executeAIStream(userMessage, imageBase64 = null) {
