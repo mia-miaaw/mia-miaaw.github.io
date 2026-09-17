@@ -37,30 +37,32 @@
             </div>
         </div>
 
-        <!-- Tombol diperbarui agar mengarahkan dengan hash parameter pemicu auto-kirim pesan -->
         <button id="btnReturn" class="w-full py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all">
             Kembali ke Chat
         </button>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        let orderId = urlParams.get('order_id');
-        let amount = urlParams.get('amount');
-
         window.onload = function() {
-            if (!orderId) {
-                orderId = localStorage.getItem('last_order_id') || 'N/A';
-            }
-            if (!amount) {
-                amount = localStorage.getItem('last_amount') || '0';
-            }
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Midtrans mengirim query param 'order_id'
+            let orderId = urlParams.get('order_id') || urlParams.get('orderId') || localStorage.getItem('last_order_id') || 'N/A';
+            let amount = urlParams.get('amount') || localStorage.getItem('last_amount') || '0';
 
+            // Tampilkan ke UI
             document.getElementById('orderId').textContent = orderId;
-            document.getElementById('amount').textContent = 'Rp ' + Number(amount).toLocaleString('id-ID');
+            
+            const numAmount = Number(amount);
+            document.getElementById('amount').textContent = numAmount > 0 
+                ? 'Rp ' + numAmount.toLocaleString('id-ID') 
+                : 'Berhasil';
 
+            // Redirect & Otomatis Triger Pengiriman Token/Koin di Main App MIA
             document.getElementById('btnReturn').onclick = function() {
-                window.location.href = `/#auto_check_payment=true&order_id=${encodeURIComponent(orderId)}`;
+                // Gunakan URL parameter biasa atau Hash Fragment agar SPA Mia membaca event topup
+                const targetUrl = `/?auto_check_payment=true&order_id=${encodeURIComponent(orderId)}#payment_success`;
+                window.location.href = targetUrl;
             };
         };
     </script>
